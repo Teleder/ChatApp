@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.chatapp.activities.ProfileActivity;
 import com.example.chatapp.activities.UsersActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,6 +19,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivities(new Intent[]{new Intent(MainActivity.this, UsersActivity.class)});
+            }
+        });
+        findViewById(R.id.imageProfile).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivities(new Intent[]{new Intent(MainActivity.this, ProfileActivity.class)});
             }
         });
     }
