@@ -1,4 +1,4 @@
-package com.example.chatapp.activities;
+package com.example.chatapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,5 +12,6 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
     }
 }

@@ -8,12 +8,20 @@
     android:overScrollMode="never"
     android:padding="@dimen/_24sdp"
     android:scrollbars="none"
-    tools:context=".activities.LoginActivity">
+    tools:context=".Activities.LoginActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/processBar"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_gravity="right"
+            android:visibility="gone"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -21,7 +29,8 @@
             android:text="Welcome Back!"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/_18ssp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,6 +46,7 @@
             android:layout_marginTop="@dimen/_40sdp"
             android:background="@drawable/background_input"
             android:hint="@string/Email"
+            android:text="test@gmail.com"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="textEmailAddress"
@@ -51,6 +61,7 @@
             android:layout_marginTop="@dimen/_16sdp"
             android:background="@drawable/background_input"
             android:hint="@string/password"
+            android:text="nf;@'t)Z #3Ua"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
             android:inputType="textPassword"
@@ -68,6 +79,9 @@
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold"
             app:cornerRadius="@dimen/_8sdp"/>
+
+
+
         <TextView
             android:id="@+id/textCreateNewAccount"
             android:layout_width="wrap_content"

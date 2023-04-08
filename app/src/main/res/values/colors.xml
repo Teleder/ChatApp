@@ -9,4 +9,13 @@
     <color name="icon_background">#20FFFFFF</color>
     <color name="error">#B00020</color>
     <color name="received_message_background">#090D16</color>
+    <color name="blue">#0099FF</color>
+<!--    -->
+    <color name="circleBorder">#50FFFFFF</color>
+    <color name="solidCircle">#AAFFFFFF</color>
+    <color name="gradEnd">#67EFC8</color>
+    <color name="gradStart">#63C9FF</color>
+    <color name="followersBg">#65DCE5</color>
+    <color name="followingBg">#49BEFF</color>
+    <color name="grey">#E5E5E5</color>
 </resources>

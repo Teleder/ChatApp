@@ -8,12 +8,18 @@
     android:overScrollMode="never"
     android:padding="@dimen/_24sdp"
     android:scrollbars="none"
-    tools:context=".activities.SignUpActivity">
+    tools:context=".Activities.SignUpActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical">
+        <ProgressBar
+            android:id="@+id/processBar"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_gravity="right"
+            android:visibility="gone"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,36 +28,67 @@
             android:textColor="@color/primary_text"
             android:textSize="@dimen/_18ssp"
             android:textStyle="bold"/>
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_20sdp"
-            >
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/imageProfile"
-                android:layout_width="@dimen/_80sdp"
-                android:layout_height="@dimen/_80sdp"
-                android:background="@drawable/background_image"
-                android:scaleType="centerCrop"
-                app:riv_oval="true"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Add Image"
-                android:textColor="@color/secondary_text"
-                android:textSize="@dimen/_10ssp"/>
-        </FrameLayout>
+<!--        <FrameLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/_20sdp"-->
+<!--            >-->
+<!--            <com.makeramen.roundedimageview.RoundedImageView-->
+<!--                android:id="@+id/imageProfile"-->
+<!--                android:layout_width="@dimen/_80sdp"-->
+<!--                android:layout_height="@dimen/_80sdp"-->
+<!--                android:background="@drawable/background_image"-->
+<!--                android:scaleType="centerCrop"-->
+<!--                app:riv_oval="true"/>-->
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:text="Add Image"-->
+<!--                android:textColor="@color/secondary_text"-->
+<!--                android:textSize="@dimen/_10ssp"/>-->
+<!--        </FrameLayout>-->
         <EditText
-            android:id="@+id/inputName"
+            android:id="@+id/inputFirstName"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_marginTop="@dimen/_20sdp"
             android:background="@drawable/background_input"
-            android:hint="Name"
+            android:hint="First Name"
+            android:text="string"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="text"
+            android:paddingStart="@dimen/_16sdp"
+            android:paddingEnd="@dimen/_16sdp"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/_13ssp"/>
+        <EditText
+            android:id="@+id/inputLastName"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="@drawable/background_input"
+            android:hint="Last Name"
+            android:text="string"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:paddingStart="@dimen/_16sdp"
+            android:paddingEnd="@dimen/_16sdp"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/_13ssp"/>
+        <EditText
+            android:id="@+id/inputPhone"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:background="@drawable/background_input"
+            android:hint="Phone"
+            android:text="string"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="textEmailAddress"
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:textColor="@color/primary_text"
@@ -63,6 +100,7 @@
             android:layout_marginTop="@dimen/_16sdp"
             android:background="@drawable/background_input"
             android:hint="@string/Email"
+            android:text="string"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="textEmailAddress"
@@ -77,6 +115,7 @@
             android:layout_marginTop="@dimen/_16sdp"
             android:background="@drawable/background_input"
             android:hint="@string/password"
+            android:text="nf;@'t)Z #3Ua"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="textPassword"
@@ -91,6 +130,7 @@
             android:layout_marginTop="@dimen/_16sdp"
             android:background="@drawable/background_input"
             android:hint="Confirm Password"
+            android:text="nf;@'t)Z #3Ua"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
             android:inputType="textPassword"
