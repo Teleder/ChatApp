@@ -64,7 +64,7 @@
 
         <TextView
             android:id="@+id/tv_fullname"
-            android:layout_width="100dp"
+            android:layout_width="352dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imgUser"
             android:layout_centerHorizontal="true"
@@ -73,7 +73,8 @@
             android:fontFamily="sans-serif-light"
             android:text="String"
             android:textColor="@color/primary_text"
-            android:textSize="32sp" />
+            android:textSize="32sp"
+            android:textAlignment="center"/>
 
     </LinearLayout>
 

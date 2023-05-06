@@ -3,19 +3,13 @@ package com.example.chatapp.Retrofit;
 import static com.example.chatapp.Utils.CONSTS.BASEURL;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
-
-import com.example.chatapp.Dtos.UserProfileDto;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 import ua.naiksoftware.stomp.dto.StompHeader;
-import ua.naiksoftware.stomp.dto.StompMessage;
 
 public class WebSocketManager {
     private static WebSocketManager instance;

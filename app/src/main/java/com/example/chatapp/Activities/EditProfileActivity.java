@@ -15,18 +15,47 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.chatapp.Dtos.UpdateInfoUserDto;
+import com.example.chatapp.Dtos.UserDto;
+import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.R;
+import com.example.chatapp.Retrofit.APIService;
+import com.example.chatapp.Retrofit.RetrofitClient;
+import com.example.chatapp.Retrofit.SharedPrefManager;
+import com.example.chatapp.Retrofit.TokenManager;
+import com.example.chatapp.Utils.CONSTS;
+import com.example.chatapp.Utils.RealPathUtil;
 
+import java.io.File;
 import java.io.IOException;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class EditProfileActivity extends AppCompatActivity {
     public static final int MY_REQUEST_CODE = 100;
     private Uri mUri;
-    ImageView editimage;
+    ImageView editImage;
+    EditText editEmail, editPhone, editFirstName, editLastName, editBio;
+    private RetrofitClient retrofitClient;
+    private TokenManager tokenManager;
+    private Retrofit retrofit;
+    SharedPrefManager sharedPrefManager;
+    APIService apiService;
+    UserProfileDto userProfileDto;
     public static String[] storge_permissions = {
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
             android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -41,7 +70,13 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        editimage = findViewById(R.id.imgUser);
+        retrofitClient = RetrofitClient.getInstance(getApplicationContext());
+        tokenManager = retrofitClient.getTokenManager();
+        retrofit = retrofitClient.getRetrofit();
+        sharedPrefManager = new SharedPrefManager(getApplicationContext());
+        userProfileDto = sharedPrefManager.getUser();
+        AnhXa(userProfileDto);
+
         findViewById(R.id.imageCancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,7 +86,8 @@ public class EditProfileActivity extends AppCompatActivity {
         findViewById(R.id.imageCheck).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivities(new Intent[]{new Intent(EditProfileActivity.this, ProfileActivity.class)});
+                updateProfile();
+//                startActivities(new Intent[]{new Intent(EditProfileActivity.this, ProfileActivity.class)});
             }
         });
         findViewById(R.id.tv_editimage).setOnClickListener(new View.OnClickListener() {
@@ -60,6 +96,81 @@ public class EditProfileActivity extends AppCompatActivity {
                 CheckPermission();
             }
         });
+    }
+    private void updateProfile()
+    {
+        final String fName = editFirstName.getText().toString();
+        final String lName = editLastName.getText().toString();
+        final String emailUser = editEmail.getText().toString();
+        final String phoneUser = editPhone.getText().toString();
+        final String bioUser = editBio.getText().toString();
+        if (TextUtils.isEmpty(fName)) {
+            editFirstName.setError("Please enter your firstname");
+            editFirstName.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(lName)) {
+            editLastName.setError("Please enter your lastname");
+            editLastName.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(bioUser)) {
+            editBio.setError("Please enter your bio");
+            editBio.requestFocus();
+            return;
+        }
+        apiService = retrofitClient.getRetrofit().create(APIService.class);
+//        String IMAGE_PATH = RealPathUtil.getRealPath(this, mUri);
+//        File file = new File(IMAGE_PATH);
+//        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+//        MultipartBody.Part partbodyavatar = MultipartBody.Part.createFormData(CONSTS.MY_IMAGES, file.getName(), requestFile);
+        UpdateInfoUserDto updateInfoUserDto = new UpdateInfoUserDto(fName, lName, phoneUser, emailUser, bioUser);
+        apiService.updateProfile(updateInfoUserDto).enqueue(new Callback<UserDto>() {
+            @Override
+            public void onResponse(Call<UserDto> call, Response<UserDto> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        userProfileDto.setFirstName(response.body().getFirstName());
+                        userProfileDto.setLastName(response.body().getLastName());
+                        userProfileDto.setBio(response.body().getBio());
+                        Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
+                        finish();
+                        Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
+                        startActivity(intent);
+                        sharedPrefManager.saveUser(userProfileDto);
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserDto> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void AnhXa(UserProfileDto userProfileDto){
+        editImage = findViewById(R.id.imgUser);
+        editPhone = (EditText) findViewById(R.id.editphone);
+        editFirstName = (EditText) findViewById(R.id.editfirstname);
+        editLastName = (EditText) findViewById(R.id.editlastname);
+        editBio = (EditText) findViewById(R.id.editbio);
+        editEmail = (EditText) findViewById(R.id.editemail);
+        editPhone.setText(userProfileDto.getPhone());
+        editBio.setText(userProfileDto.getBio());
+        editFirstName.setText(userProfileDto.getFirstName());
+        editLastName.setText(userProfileDto.getLastName());
+        editEmail.setText(userProfileDto.getEmail());
+        if (userProfileDto.getAvatar() == null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Glide.with(getApplicationContext()).load(getApplicationContext().getDrawable(R.drawable.user)).into(editImage);
+            }
+            else {
+                Glide.with(getApplicationContext()).load(userProfileDto.getAvatar()).into(editImage);
+            }
     }
     private void CheckPermission() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -102,7 +213,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         mUri = uri;
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                            editimage.setImageBitmap(bitmap);
+                            editImage.setImageBitmap(bitmap);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

@@ -5,6 +5,7 @@ import com.example.chatapp.Model.File.File;
 import com.example.chatapp.Model.User.Block;
 import com.example.chatapp.Model.User.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserProfileDto {
@@ -17,9 +18,24 @@ public class UserProfileDto {
     private File avatar;
     private File QR;
     private String displayName;
-    private List<Block> list_block;
-    private List<Conservation> conservation;
+    private List<Block> blocks = new ArrayList<>();
+    private List<Conservation> conservations = new ArrayList<>();
     private User.Role role;
+
+    public UserProfileDto(String id, String firstName, String lastName, String phone, String email, String bio, File avatar, File QR, String displayName, List<Block> blocks, List<Conservation> conservations, User.Role role) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.bio = bio;
+        this.avatar = avatar;
+        this.QR = QR;
+        this.displayName = displayName;
+        this.blocks = blocks;
+        this.conservations = conservations;
+        this.role = role;
+    }
 
     public String getId() {
         return id;
@@ -93,20 +109,20 @@ public class UserProfileDto {
         this.displayName = displayName;
     }
 
-    public List<Block> getList_block() {
-        return list_block;
+    public List<Block> getBlocks() {
+        return blocks;
     }
 
-    public void setList_block(List<Block> list_block) {
-        this.list_block = list_block;
+    public void setBlocks(List<Block> blocks) {
+        this.blocks = blocks;
     }
 
-    public List<Conservation> getConservation() {
-        return conservation;
+    public List<Conservation> getConservations() {
+        return conservations;
     }
 
-    public void setConservation(List<Conservation> conservation) {
-        this.conservation = conservation;
+    public void setConservations(List<Conservation> conservations) {
+        this.conservations = conservations;
     }
 
     public User.Role getRole() {

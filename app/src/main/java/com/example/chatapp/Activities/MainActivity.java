@@ -5,16 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Retrofit.TokenManager;
-import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Retrofit.WebSocketManager;
 
 import retrofit2.Retrofit;
@@ -55,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.imageSignOut).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPrefManager.getInstance(getApplicationContext()).logout();
+                //SharedPrefManager.getInstance(getApplicationContext()).logout();
+                startActivities(new Intent[]{new Intent(MainActivity.this, ContactActivity.class)});
             }
         });
         imageViewprofile = findViewById(R.id.imageProfile);

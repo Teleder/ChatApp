@@ -3,11 +3,10 @@ package com.example.chatapp.Retrofit;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
+import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.User.User;
 import com.example.chatapp.Activities.LoginActivity;
-import com.example.chatapp.Dtos.UserProfileDto;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

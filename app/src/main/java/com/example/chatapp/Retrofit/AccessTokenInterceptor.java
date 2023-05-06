@@ -16,7 +16,13 @@ public class AccessTokenInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        Response response = chain.proceed(request);
+
+        // Thêm access token vào yêu cầu ban đầu
+        Request requestWithAccessToken = request.newBuilder()
+                .header("Authorization", "Bearer " + tokenManager.getAccessToken())
+                .build();
+
+        Response response = chain.proceed(requestWithAccessToken);
 
         if (response.code() == 401) { // Unauthorized
             synchronized (tokenManager) {

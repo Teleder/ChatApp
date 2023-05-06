@@ -14,6 +14,7 @@ public class Conservation extends BaseModel {
     private String code = UUID.randomUUID().toString();
     private Type type = Type.PERSONAL;
     private List<PinMessage> pinMessage;
+    Message lastMessage;
     private User user_1;
     private User user_2;
     private Group group;

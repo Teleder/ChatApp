@@ -46,7 +46,7 @@
             android:layout_marginTop="@dimen/_40sdp"
             android:background="@drawable/background_input"
             android:hint="@string/Email"
-            android:text="test@gmail.com"
+            android:text="stringtest@gmail.com"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="textEmailAddress"
