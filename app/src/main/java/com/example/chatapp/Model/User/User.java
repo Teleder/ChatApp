@@ -15,10 +15,7 @@ public class User extends BaseModel {
     private String phone;
     private String email;
     private String bio;
-    // ti m tu them may model khac vao, r bam shift + insert để tạo setter
-    // getter do nó k có cái @lombok.Data nên nó k tự tạo getter setter mà phải tạo tay    hiểu ch   chỉ extend cái Basemodel
-    // annotaion là mấy cái @ hiểu ch
-    //ok
+
     private File avatar;
     private String QR;
     private List<Block> list_block;

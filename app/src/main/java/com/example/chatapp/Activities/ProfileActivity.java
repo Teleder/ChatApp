@@ -48,6 +48,13 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivities(new Intent[]{new Intent(ProfileActivity.this, EditProfileActivity.class)});
             }
         });
+        findViewById(R.id.btnLogout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPrefManager.getInstance(getApplicationContext()).logout();
+                startActivities(new Intent[]{new Intent(ProfileActivity.this, LoginActivity.class)});
+            }
+        });
     }
     private void AnhXa(UserProfileDto userProfileDto)
     {

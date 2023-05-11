@@ -6,6 +6,7 @@ import com.example.chatapp.Dtos.LoginInputDto;
 import com.example.chatapp.Dtos.PagedResultDto;
 import com.example.chatapp.Dtos.UpdateInfoUserDto;
 import com.example.chatapp.Dtos.UserDto;
+import com.example.chatapp.Dtos.UserSearchDto;
 import com.example.chatapp.Model.User.Contact;
 
 import java.util.List;
@@ -27,8 +28,14 @@ public interface APIService {
     @PATCH("users/profile")
     Call<UserDto> updateProfile(@Body UpdateInfoUserDto updateInfoUserDto);
     @GET("users/contact-waiting-accept")
-    Call<PagedResultDto<Contact>> getContactRequestSend(@Query("displayName") String displayName, @Query("page") int page, @Query("size") int size);
+    Call<PagedResultDto<Contact>> getContactRequestSend(@Query("page") int page, @Query("size") int size);
     @FormUrlEncoded
     @PATCH("users/respond-to-request-for-contacts")
     Call<Boolean> AcceptContact(@Field("contactId") String contactId, @Field("accept") boolean accept);
+    @GET("users/contacts")
+    Call<PagedResultDto<UserSearchDto>> getContacts(@Query("displayName") String displayName, @Query("page") int page, @Query("size") int size);
+    @PATCH("users/remove-contact")
+    Call<Boolean> UnFriend(@Query("contactId") String contactId);
+    @GET("users/search")
+    Call<List<UserSearchDto>> SearchFriend(@Query("searchText") String searchText);
 }

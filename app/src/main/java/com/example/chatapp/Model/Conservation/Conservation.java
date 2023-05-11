@@ -24,6 +24,9 @@ public class Conservation extends BaseModel {
         this.group = group;
     }
 
+    public Conservation() {
+    }
+
     public Conservation(Group group, String code) {
         this.group = group;
         this.code = code;
@@ -38,5 +41,76 @@ public class Conservation extends BaseModel {
         private List<Message> pinMessage;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public List<PinMessage> getPinMessage() {
+        return pinMessage;
+    }
+
+    public void setPinMessage(List<PinMessage> pinMessage) {
+        this.pinMessage = pinMessage;
+    }
+
+    public Message getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(Message lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    public User getUser_1() {
+        return user_1;
+    }
+
+    public void setUser_1(User user_1) {
+        this.user_1 = user_1;
+    }
+
+    public User getUser_2() {
+        return user_2;
+    }
+
+    public void setUser_2(User user_2) {
+        this.user_2 = user_2;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
 }
 

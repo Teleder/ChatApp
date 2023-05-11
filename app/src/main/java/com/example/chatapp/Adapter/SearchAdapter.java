@@ -25,14 +25,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactHolder> {
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchContactHolder>{
     private Context context;
     private List<UserSearchDto> arrList;
     private RetrofitClient retrofitClient;
     private Retrofit retrofit;
     APIService apiService;
 
-    public ContactAdapter(Context context, List<UserSearchDto> arrList) {
+    public SearchAdapter(Context context, List<UserSearchDto> arrList) {
         this.context = context;
         this.arrList = arrList;
         retrofitClient = RetrofitClient.getInstance(context);
@@ -41,13 +41,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
 
     @NonNull
     @Override
-    public ContactAdapter.ContactHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from((parent.getContext())).inflate(R.layout.item_contacts, parent, false);
-        return new ContactAdapter.ContactHolder(view);
+    public SearchAdapter.SearchContactHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from((parent.getContext())).inflate(R.layout.item_list_search, parent, false);
+        return new SearchAdapter.SearchContactHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ContactAdapter.ContactHolder holder, int position) {
+    public void onBindViewHolder(SearchAdapter.SearchContactHolder holder, int position) {
         UserSearchDto userSearchDto = arrList.get(position);
         if (userSearchDto.getAvatar() != null)
             Glide.with(context).load(userSearchDto.getAvatar()).into(holder.avatar);
@@ -71,12 +71,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
         return 0;
     }
 
-    public class ContactHolder extends RecyclerView.ViewHolder {
+    public class SearchContactHolder extends RecyclerView.ViewHolder {
         private ImageView avatar;
         private TextView tvDisplayName, tvBio, userId;
         private Button btnAddFriend;
 
-        public ContactHolder(View itemView) {
+        public SearchContactHolder(View itemView) {
             super(itemView);
             avatar = itemView.findViewById(R.id.imgUser);
             tvDisplayName = itemView.findViewById(R.id.tvNameUser);

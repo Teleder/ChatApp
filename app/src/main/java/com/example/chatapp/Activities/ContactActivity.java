@@ -1,84 +1,46 @@
 package com.example.chatapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
-import com.example.chatapp.Adapter.ContactAdapter;
-import com.example.chatapp.Dtos.LoginDto;
-import com.example.chatapp.Dtos.LoginInputDto;
-import com.example.chatapp.Dtos.PagedResultDto;
-import com.example.chatapp.Model.User.Contact;
+import com.example.chatapp.Adapter.ViewPagerAdapter;
 import com.example.chatapp.R;
-import com.example.chatapp.Retrofit.APIService;
-import com.example.chatapp.Retrofit.RetrofitClient;
-import com.example.chatapp.Retrofit.SharedPrefManager;
-import com.example.chatapp.Retrofit.TokenManager;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+import com.google.android.material.tabs.TabLayout;
 
 public class ContactActivity extends AppCompatActivity {
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
-    private RetrofitClient retrofitClient;
-    private TokenManager tokenManager;
-    private Retrofit retrofit;
-    SharedPrefManager sharedPrefManager;
-    APIService apiService;
-    RecyclerView rcIcon;
-    List<Contact> arrayList;
-    ContactAdapter contactAdapter;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact);
-        retrofitClient = RetrofitClient.getInstance(getApplicationContext());
-        tokenManager = retrofitClient.getTokenManager();
-        retrofit = retrofitClient.getRetrofit();
-        sharedPrefManager = new SharedPrefManager(getApplicationContext());
-        rcIcon =(RecyclerView) findViewById(R.id.rcIcon);
-        getContactRequestSend();
+        setContentView(R.layout.activity_contacts);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.view_pager);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        viewPager.setAdapter(viewPagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
-    }
-    private void getContactRequestSend()
-    {
-        apiService = retrofitClient.getRetrofit().create(APIService.class);
-        apiService.getContactRequestSend("test",0,1000).enqueue(new Callback<PagedResultDto<Contact>>() {
+        findViewById(R.id.imageBack).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<PagedResultDto<Contact>> call, Response<PagedResultDto<Contact>> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        arrayList = response.body().getData();
-                        contactAdapter = new ContactAdapter(ContactActivity.this, arrayList);
-                        rcIcon.setHasFixedSize(true);
-                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
-                        rcIcon.setLayoutManager(layoutManager);
-                        rcIcon.setAdapter(contactAdapter);
-                        contactAdapter.notifyDataSetChanged();
-                        Toast.makeText(getApplicationContext(), "Call api success", Toast.LENGTH_SHORT).show();
-//                        finish();
-                    } catch (RuntimeException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_SHORT).show();
-                }
+            public void onClick(View view) {
+                startActivities(new Intent[]{new Intent(ContactActivity.this, MainActivity.class)});
             }
-
+        });
+        findViewById(R.id.imgSearch).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(Call<PagedResultDto<Contact>> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onClick(View view) {
+                startActivities(new Intent[]{new Intent(ContactActivity.this, SearchActivity.class)});
             }
         });
     }
+
+
 }

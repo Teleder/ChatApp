@@ -3,6 +3,7 @@ package com.example.chatapp.Dtos;
 import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.Model.File.File;
 import com.example.chatapp.Model.User.Block;
+import com.example.chatapp.Model.User.Contact;
 import com.example.chatapp.Model.User.User;
 
 import java.util.ArrayList;
@@ -21,8 +22,9 @@ public class UserProfileDto {
     private List<Block> blocks = new ArrayList<>();
     private List<Conservation> conservations = new ArrayList<>();
     private User.Role role;
+    private List<Contact> list_contact = new ArrayList<>();
 
-    public UserProfileDto(String id, String firstName, String lastName, String phone, String email, String bio, File avatar, File QR, String displayName, List<Block> blocks, List<Conservation> conservations, User.Role role) {
+    public UserProfileDto(String id, String firstName, String lastName, String phone, String email, String bio, File avatar, File QR, String displayName, List<Block> blocks, List<Conservation> conservations, User.Role role, List<Contact> list_contact) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -35,6 +37,15 @@ public class UserProfileDto {
         this.blocks = blocks;
         this.conservations = conservations;
         this.role = role;
+        this.list_contact = list_contact;
+    }
+
+    public List<Contact> getList_contact() {
+        return list_contact;
+    }
+
+    public void setList_contact(List<Contact> list_contact) {
+        this.list_contact = list_contact;
     }
 
     public String getId() {
