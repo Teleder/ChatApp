@@ -10,7 +10,19 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.ChatApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="CustomTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="toolbarStyle">@color/white</item>
+    </style>
 
-    <style name="Theme.ChatApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.ChatApp.Toolbar.Light" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ThemeOverlay.App.Toolbar.Light." parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="colorOnPrimary">@color/white</item>
+    </style>
+
+    <style name="SmoothCheckBoxStyle.">
+        <item name="color_checked">@color/purple_500</item>
+        <item name="color_tick">@color/white</item>
+    </style>
 </resources>

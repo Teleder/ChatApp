@@ -10,17 +10,16 @@ public class Member {
     private String userId;
     private Date createAt = new Date();
     private Date updateAt = new Date();
-    private User addedBy;
-
+    private String addedByUserId;
     User user;
-    public Member(String userId, User addedBy, Status status) {
+    public Member(String userId, String addedByUserId, Status status) {
         this.userId = userId;
-        this.addedBy = addedBy;
+        this.addedByUserId = addedByUserId;
         this.status = status;
     }
-    public Member(User user, User addedBy, Status status) {
+    public Member(User user, String addedByUserId, Status status) {
         this.user = user;
-        this.addedBy = addedBy;
+        this.addedByUserId = addedByUserId;
         this.status = status;
     }
     public enum Status {

@@ -6,13 +6,25 @@ android {
     namespace 'com.example.chatapp'
     compileSdk 33
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
+        pickFirst 'androidsupportmultidexversion.txt'
+    }
     defaultConfig {
         applicationId "com.example.chatapp"
-        minSdk 16
+        minSdk 17
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -71,4 +83,16 @@ dependencies {
     //
     implementation 'androidx.lifecycle:lifecycle-livedata:2.4.1'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+
+    // Emoji
+    implementation 'com.vanniktech:emoji-ios:0.7.0'
+
+    // Image and Video picker
+    implementation 'pub.devrel:easypermissions:3.0.0'
+    implementation 'com.droidninja:filepicker:2.2.5'
+    implementation 'com.github.bumptech.glide:glide:4.13.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.3'
+
+    implementation 'com.android.support:multidex:1.0.3'
+
 }

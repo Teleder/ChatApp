@@ -1,13 +1,9 @@
 package com.example.chatapp.Model.User;
 
 public class Contact {
-    User user;
+    String userId;
     Status status;
-
-    public Contact(User user, Status status) {
-        this.user = user;
-        this.status = status;
-    }
+    User user;
 
     public User getUser() {
         return user;
@@ -15,6 +11,14 @@ public class Contact {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public Status getStatus() {
@@ -25,6 +29,13 @@ public class Contact {
         this.status = status;
     }
 
+    public Contact(String userId, Status status) {
+        this.userId = userId;
+        this.status = status;
+    }
+    public Contact() {
+
+    }
     public enum Status {
         ACCEPT,
         WAITING,

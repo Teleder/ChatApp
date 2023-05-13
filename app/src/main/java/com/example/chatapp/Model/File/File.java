@@ -4,7 +4,6 @@ import com.example.chatapp.Model.BaseModel;
 import com.example.chatapp.Model.User.User;
 
 public class File extends BaseModel {
-
     String name;
     FileCategory file_type;
     double file_size;

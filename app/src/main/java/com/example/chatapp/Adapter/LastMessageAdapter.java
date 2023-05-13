@@ -52,7 +52,7 @@ public class LastMessageAdapter extends RecyclerView.Adapter<LastMessageAdapter.
         Conservation conservation = arrList.get(position);
         if(arrList.size()>0)
         {
-            if(userProfileDto.getId().equals(conservation.getUser_1().getId()) && conservation.getGroup()==null)
+            if(userProfileDto.getId().equals(conservation.getUserId_1()) && conservation.getGroup()==null)
             {
                 holder.tvDisplayName.setText(conservation.getUser_2().getDisplayName());
                 holder.tvLastMessages.setText(conservation.getLastMessage().getContent());

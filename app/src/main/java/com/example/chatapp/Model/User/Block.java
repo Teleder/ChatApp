@@ -3,12 +3,12 @@ import java.util.Date;
 
 public class Block {
     String reason;
-    private User user;
+    private String userId;
     private Date createAt = new Date();
     private Date updateAt = new Date();
 
-    public Block(User user, String reason) {
-        this.user = user;
+    public Block(String userId, String reason) {
+        this.userId = userId;
         this.reason = reason;
     }
 }

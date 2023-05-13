@@ -15,7 +15,7 @@ public class WebSocketManager {
     private static WebSocketManager instance;
     private StompClient stompClient;
     private WebSocketManager() {
-        String websocketUrl = "ws://"+BASEURL+"/websocket";
+        String websocketUrl = "ws://"+BASEURL+"/websocket/websocket";
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, websocketUrl);
     }
 

@@ -5,7 +5,7 @@ import com.google.type.DateTime;
 
 public class BlockList {
     String reason;
-    private User user;
+    private String userId;
     private DateTime createAt;
     private DateTime updateAt;
 }
