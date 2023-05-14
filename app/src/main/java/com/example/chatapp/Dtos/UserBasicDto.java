@@ -3,7 +3,7 @@ package com.example.chatapp.Dtos;
 import com.example.chatapp.Model.File.File;
 import com.google.type.DateTime;
 
-public class UserSearchDto {
+public class UserBasicDto {
     public DateTime createAt;
     public DateTime updateAt;
     private String id;
@@ -14,7 +14,7 @@ public class UserSearchDto {
     private String bio;
     private File avatar;
 
-    public UserSearchDto(DateTime createAt, DateTime updateAt, String id, String firstName, String displayName, String lastName, String phone, String bio, File avatar) {
+    public UserBasicDto(DateTime createAt, DateTime updateAt, String id, String firstName, String displayName, String lastName, String phone, String bio, File avatar) {
         this.createAt = createAt;
         this.updateAt = updateAt;
         this.id = id;

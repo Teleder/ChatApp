@@ -9,17 +9,13 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.chatapp.Adapter.SearchAdapter;
-import com.example.chatapp.Adapter.WaitingAcceptContactAdapter;
-import com.example.chatapp.Dtos.PagedResultDto;
-import com.example.chatapp.Dtos.UserSearchDto;
-import com.example.chatapp.Model.User.Contact;
+import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Retrofit.TokenManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,7 +27,7 @@ public class SearchActivity extends AppCompatActivity {
     RecyclerView rcListSearch;
     SearchView searchView;
     SearchAdapter searchAdapter;
-    List<UserSearchDto> arrayList;
+    List<UserBasicDto> arrayList;
     private RetrofitClient retrofitClient;
     private TokenManager tokenManager;
     private Retrofit retrofit;
@@ -64,9 +60,9 @@ public class SearchActivity extends AppCompatActivity {
     private void filterListener(String text)
     {
         apiService = retrofitClient.getRetrofit().create(APIService.class);
-        apiService.SearchFriend(text).enqueue(new Callback<List<UserSearchDto>>() {
+        apiService.SearchFriend(text).enqueue(new Callback<List<UserBasicDto>>() {
             @Override
-            public void onResponse(Call<List<UserSearchDto>> call, Response<List<UserSearchDto>> response) {
+            public void onResponse(Call<List<UserBasicDto>> call, Response<List<UserBasicDto>> response) {
                 if (response.isSuccessful()) {
                     try {
                         arrayList = response.body();
@@ -87,7 +83,7 @@ public class SearchActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<UserSearchDto>> call, Throwable t) {
+            public void onFailure(Call<List<UserBasicDto>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

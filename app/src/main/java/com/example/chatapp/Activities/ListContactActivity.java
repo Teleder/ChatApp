@@ -7,17 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.chatapp.Adapter.ContactAdapter;
-import com.example.chatapp.Adapter.WaitingAcceptContactAdapter;
 import com.example.chatapp.Dtos.PagedResultDto;
-import com.example.chatapp.Dtos.UserSearchDto;
-import com.example.chatapp.Model.User.Contact;
+import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
@@ -38,7 +35,7 @@ public class ListContactActivity extends Fragment {
     SharedPrefManager sharedPrefManager;
     APIService apiService;
     RecyclerView rcIcon;
-    List<UserSearchDto> arrayList;
+    List<UserBasicDto> arrayList;
     ContactAdapter contactAdapter;
     public ListContactActivity(){
 
@@ -58,9 +55,9 @@ public class ListContactActivity extends Fragment {
     }
     private void getContacts(View view) {
         apiService = retrofitClient.getRetrofit().create(APIService.class);
-        apiService.getContacts("",0, 1000).enqueue(new Callback<PagedResultDto<UserSearchDto>>() {
+        apiService.getContacts("",0, 1000).enqueue(new Callback<PagedResultDto<UserBasicDto>>() {
             @Override
-            public void onResponse(Call<PagedResultDto<UserSearchDto>> call, Response<PagedResultDto<UserSearchDto>> response) {
+            public void onResponse(Call<PagedResultDto<UserBasicDto>> call, Response<PagedResultDto<UserBasicDto>> response) {
                 if (response.isSuccessful()) {
                     try {
                         arrayList = response.body().getData();
@@ -81,7 +78,7 @@ public class ListContactActivity extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<PagedResultDto<UserSearchDto>> call, Throwable t) {
+            public void onFailure(Call<PagedResultDto<UserBasicDto>> call, Throwable t) {
                 Toast.makeText(view.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

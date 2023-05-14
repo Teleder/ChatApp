@@ -95,4 +95,8 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
 
+    // audio
+    implementation 'com.vanniktech:emoji-google:0.7.0'
+
+
 }

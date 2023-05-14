@@ -29,7 +29,6 @@ public class LastMessageAdapter extends RecyclerView.Adapter<LastMessageAdapter.
     private Context context;
     private List<Conservation> arrList;
 
-
     SharedPrefManager sharedPrefManager;
     UserProfileDto userProfileDto;
 
@@ -80,9 +79,9 @@ public class LastMessageAdapter extends RecyclerView.Adapter<LastMessageAdapter.
             holder.tvDisplayName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("code",conservation.getCode());
+                    sharedPrefManager.saveCurrentConservation(conservation);
                     context.startActivity(intent);
                 }
             });

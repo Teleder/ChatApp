@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.chatapp.Dtos.UserSearchDto;
+import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
@@ -27,12 +27,12 @@ import retrofit2.Retrofit;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchContactHolder>{
     private Context context;
-    private List<UserSearchDto> arrList;
+    private List<UserBasicDto> arrList;
     private RetrofitClient retrofitClient;
     private Retrofit retrofit;
     APIService apiService;
 
-    public SearchAdapter(Context context, List<UserSearchDto> arrList) {
+    public SearchAdapter(Context context, List<UserBasicDto> arrList) {
         this.context = context;
         this.arrList = arrList;
         retrofitClient = RetrofitClient.getInstance(context);
@@ -48,12 +48,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchCont
 
     @Override
     public void onBindViewHolder(SearchAdapter.SearchContactHolder holder, int position) {
-        UserSearchDto userSearchDto = arrList.get(position);
-        if (userSearchDto.getAvatar() != null)
-            Glide.with(context).load(userSearchDto.getAvatar()).into(holder.avatar);
-        holder.tvDisplayName.setText(userSearchDto.getDisplayName());
-        holder.tvBio.setText(userSearchDto.getBio());
-        holder.userId.setText(userSearchDto.getId());
+        UserBasicDto userBasicDto = arrList.get(position);
+        if (userBasicDto.getAvatar() != null)
+            Glide.with(context).load(userBasicDto.getAvatar()).into(holder.avatar);
+        holder.tvDisplayName.setText(userBasicDto.getDisplayName());
+        holder.tvBio.setText(userBasicDto.getBio());
+        holder.userId.setText(userBasicDto.getId());
         holder.btnAddFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,7 +86,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchCont
         }
     }
 
-    public void setListenerList(List<UserSearchDto> contactModelList) {
+    public void setListenerList(List<UserBasicDto> contactModelList) {
         this.arrList = contactModelList;
         notifyDataSetChanged();
     }

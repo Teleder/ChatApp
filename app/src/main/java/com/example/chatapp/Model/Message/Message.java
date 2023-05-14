@@ -14,7 +14,7 @@ public class Message extends BaseModel {
     private String id;
     private String content;
     private String code;
-    private String TYPE;
+    private String type;
     private String userId_send;
     private String userId_receive;
     private String groupId;
@@ -23,11 +23,11 @@ public class Message extends BaseModel {
     Date readAt = null;
     Date deliveredAt =null;
 
-    public Message(String id, String content, String code, String TYPE, String userId_send, String userId_receive, String groupId, File file, String idParent, Date readAt, Date deliveredAt, List<Message> replyMessages, List<Emotion> list_emotion, List<HistoryChange> historyChanges) {
+    public Message(String id, String content, String code, String type, String userId_send, String userId_receive, String groupId, File file, String idParent, Date readAt, Date deliveredAt, List<Message> replyMessages, List<Emotion> list_emotion, List<HistoryChange> historyChanges) {
         this.id = id;
         this.content = content;
         this.code = code;
-        this.TYPE = TYPE;
+        this.type = type;
         this.userId_send = userId_send;
         this.userId_receive = userId_receive;
         this.groupId = groupId;
@@ -108,10 +108,10 @@ public class Message extends BaseModel {
     private List<Emotion> list_emotion = new ArrayList<>();
     private List<HistoryChange> historyChanges = new ArrayList<>();
 
-    public Message(String content, String code, String TYPE){
+    public Message(String content, String code, String type){
         this.code =code;
         this.content = content;
-        this.TYPE = TYPE;
+        this.type = type;
     }
 
     public String getId() {
@@ -138,12 +138,12 @@ public class Message extends BaseModel {
         this.code = code;
     }
 
-    public String getTYPE() {
-        return TYPE;
+    public String getType() {
+        return type;
     }
 
-    public void setTYPE(String TYPE) {
-        this.TYPE = TYPE;
+    public void setType(String type) {
+        this.type = type;
     }
 
 

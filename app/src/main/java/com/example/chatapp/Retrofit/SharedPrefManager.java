@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.example.chatapp.Dtos.UserProfileDto;
+import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.Model.User.User;
 import com.example.chatapp.Activities.LoginActivity;
 import com.google.gson.Gson;
@@ -22,6 +23,7 @@ public class SharedPrefManager {
     private static final String KEY_PASSWORD = "keypassword";
     private static final String KEY_BIO = "keybio";
     private static final String CURRENT_USER = "currentuser";
+    private static final String CURRENT_CONSERVATION = "CURRENT_CONSERVATION";
     private static SharedPrefManager mInstance;
     private static Context ctx;
     private Gson gson;
@@ -69,6 +71,22 @@ public class SharedPrefManager {
         }
         return null;
     }
+
+    public Conservation getCurrentConservation() {
+        String conservation = sharedPreferences.getString(CURRENT_CONSERVATION, null);
+        if (conservation != null) {
+            Type type = new TypeToken<Conservation>() {}.getType();
+            return gson.fromJson(conservation, type);
+        }
+        return null;
+    }
+    public void saveCurrentConservation(Conservation conservation) {
+        String userJson = gson.toJson(conservation);
+        editor.putString(CURRENT_CONSERVATION, userJson);
+        editor.apply();
+    }
+
+
 
     public void clearUser() {
         editor.remove(CURRENT_USER).apply();

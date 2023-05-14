@@ -12,7 +12,7 @@
         android:id="@+id/viewBackground"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/_16sdp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/background_content_top"
         app:layout_constraintBottom_toTopOf="@id/layoutSend"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +23,8 @@
         android:layout_height="0dp"
         android:background="@color/primary"
         app:layout_constraintBottom_toTopOf="@id/viewSupporter"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+      />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageBack"
@@ -34,9 +35,9 @@
         android:layout_marginTop="@dimen/_12sdp"
         android:padding="@dimen/_5sdp"
         android:src="@drawable/ic_back"
+        android:tint="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:tint="@color/white"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageInfo"
@@ -44,12 +45,12 @@
         android:layout_height="@dimen/_30sdp"
         android:layout_marginTop="@dimen/_12sdp"
         android:layout_marginEnd="@dimen/_16sdp"
-        android:layout_marginRight="@dimen/_16sdp"
-        android:padding="@dimen/_4sdp"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:padding="@dimen/_5sdp"
         android:src="@drawable/ic_info"
+        android:tint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:tint="@color/white"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textName"
@@ -60,10 +61,10 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
+        android:text="Test"
         android:textColor="@color/white"
         android:textSize="@dimen/_14ssp"
         android:textStyle="bold"
-        android:text="Test"
         app:layout_constraintBottom_toBottomOf="@id/imageBack"
         app:layout_constraintEnd_toStartOf="@id/imageInfo"
         app:layout_constraintStart_toEndOf="@id/imageBack"
@@ -73,47 +74,99 @@
         android:id="@+id/viewSupporter"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/_12sdp"
+        android:layout_marginTop="12dp"
         android:background="@color/primary"
         app:layout_constraintTop_toBottomOf="@id/imageBack" />
-    <TextView
-        android:id="@+id/textAvailability"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#008000"
-        android:padding="@dimen/_2sdp"
-        android:text="Online"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_10sdp"
-        android:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@id/viewSupporter"
-        />
+
+<!--    <TextView-->
+<!--        android:id="@+id/textAvailability"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="#008000"-->
+<!--        android:gravity="center"-->
+<!--        android:padding="@dimen/_2sdp"-->
+<!--        android:text="Online"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="@dimen/_10sdp"-->
+<!--        android:visibility="visible"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/viewSupporter"-->
+<!--        tools:layout_editor_absoluteX="1dp" />-->
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chatRecyclerView"
+        android:id="@+id/rcMessages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:overScrollMode="never"
         android:padding="@dimen/_20sdp"
-        app:stackFromEnd="true"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="@id/viewBackground"
-        app:layout_constraintTop_toBottomOf="@id/textAvailability" />
+        app:layout_constraintBottom_toTopOf="@+id/inputMessage"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/viewBackground"
+        app:layout_constraintTop_toBottomOf="@+id/viewSupporter"
+        app:stackFromEnd="true" />
+    <RelativeLayout
+        android:id="@+id/layoutAudioRecording"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/inputMessage"
+        app:layout_constraintStart_toStartOf="parent">
 
+        <TextView
+            android:id="@+id/tvAudioTimeline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="00:00" />
+
+        <ImageButton
+            android:id="@+id/btnStopAudio"
+
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_toStartOf="@+id/tvAudioTimeline"
+            android:layout_toLeftOf="@+id/tvAudioTimeline"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_stop" />
+
+        <ImageButton
+            android:id="@+id/btnCancelAudio"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_toStartOf="@+id/btnStopAudio"
+            android:layout_toLeftOf="@+id/btnStopAudio"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_cancel" />
+
+        <ImageButton
+            android:id="@+id/btnSendAudio"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_toEndOf="@+id/tvAudioTimeline"
+            android:layout_toRightOf="@+id/tvAudioTimeline"
+            android:background="?android:selectableItemBackground"
+            android:src="@drawable/ic_send" />
+
+    </RelativeLayout>
     <ProgressBar
         android:id="@+id/processBar"
         android:layout_width="@dimen/_25sdp"
         android:layout_height="@dimen/_25sdp"
-        app:layout_constraintBottom_toBottomOf="@id/viewBackground"
-        app:layout_constraintEnd_toEndOf="@id/viewBackground"
-        app:layout_constraintStart_toStartOf="@id/viewBackground"
-        app:layout_constraintTop_toTopOf="@id/viewBackground"
-        />
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="@+id/rcMessages"
+        app:layout_constraintTop_toTopOf="@+id/rcMessages"
+        app:layout_constraintVertical_bias="0.419" />
 
     <FrameLayout
         android:id="@+id/layoutAttach"
@@ -181,6 +234,27 @@
     </FrameLayout>
 
     <!-- ... -->
+    <EditText
+        android:id="@+id/inputMessage"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginLeft="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:layout_marginRight="@dimen/_8sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:background="@drawable/background_chat_input"
+        android:hint="Type a message"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingEnd="@dimen/_16sdp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/secondary_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/layoutSend"
+        app:layout_constraintStart_toEndOf="@id/layoutEmoji" />
 
     <FrameLayout
         android:id="@+id/layoutSend"
@@ -190,6 +264,7 @@
         android:layout_marginRight="@dimen/_16sdp"
         android:layout_marginBottom="@dimen/_12sdp"
         android:background="@drawable/background_chat_input"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -202,5 +277,27 @@
             android:src="@drawable/ic_send"
             app:tint="@color/white" />
     </FrameLayout>
+
+    <VideoView
+        android:id="@+id/videoPreview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="-2dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <ImageView
+        android:id="@+id/imagePreview"
+        android:layout_width="417dp"
+        android:layout_height="729dp"
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="-6dp"
+        tools:layout_editor_absoluteY="2dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

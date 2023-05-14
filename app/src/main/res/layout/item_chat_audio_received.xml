@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="@dimen/_8sdp"
+    android:padding="@dimen/_4sdp">
+
+    <ImageView
+        android:id="@+id/audioIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.018"
+        app:layout_constraintStart_toEndOf="@+id/imageProfile"
+        android:src="@android:drawable/ic_media_play" />
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/imageProfile"
+        android:layout_width="@dimen/_25sdp"
+        android:layout_height="@dimen/_25sdp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/background_image"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@id/audioIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:riv_oval="true"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/audioDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="16dp"
+        android:layout_toRightOf="@+id/audioIcon"
+        android:text="00:00"
+        app:layout_constraintStart_toEndOf="@id/imageProfile"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textDateTime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/_8ssp"
+        app:layout_constraintStart_toStartOf="@id/audioIcon"
+        app:layout_constraintTop_toBottomOf="@id/audioIcon"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
