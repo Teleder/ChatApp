@@ -1,15 +1,14 @@
 package com.example.chatapp.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.chatapp.Adapter.NewMessageAdapter;
-import com.example.chatapp.Adapter.ViewPagerAdapter;
 import com.example.chatapp.R;
 import com.google.android.material.tabs.TabLayout;
 
@@ -17,6 +16,7 @@ public class NewMessageActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

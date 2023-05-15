@@ -10,13 +10,13 @@ import androidx.fragment.app.Fragment;
 import com.example.chatapp.R;
 
 public class ListGroupActivity extends Fragment {
-    public ListGroupActivity(){
+    public ListGroupActivity() {
 
     }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        View view = inflater.inflate(R.layout.activity_contact_group, container,false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_contact_group, container, false);
         return view;
     }
 }

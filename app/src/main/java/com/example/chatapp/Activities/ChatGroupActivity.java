@@ -45,7 +45,6 @@ import com.example.chatapp.Dtos.PagedResultDto;
 import com.example.chatapp.Dtos.PayloadAction;
 import com.example.chatapp.Dtos.PayloadMessage;
 import com.example.chatapp.Dtos.SocketPayload;
-import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.Model.Message.Message;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
@@ -57,6 +56,7 @@ import com.example.chatapp.Utils.CONSTS;
 import com.example.chatapp.Utils.MessageObserver;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiPopup;
 import com.vanniktech.emoji.google.GoogleEmojiProvider;
@@ -83,7 +83,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Retrofit;
 
 
-public class ChatActivity extends AppCompatActivity implements MessageObserver, ActionSender {
+public class ChatGroupActivity extends AppCompatActivity implements MessageObserver, ActionSender {
     private static final int REQUEST_CODE_PERMISSIONS = 100;
     RecyclerView rcMessages;
     SharedPrefManager sharedPrefManager;
@@ -105,26 +105,12 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
     private MediaRecorder recorder;
     private FrameLayout layoutAttach;
     private FrameLayout layoutAudio;
-    private FrameLayout layoutEmoji;
+    private EditText layoutEmoji;
     private FrameLayout layoutSend;
     private ImageView imageBack;
     private long totalMessage = 21;
     private int nextPage = 0;
     private final int limitMessage = 20;
-    private final Handler typingHandler = new Handler();
-    private final Runnable typingRunnable = new Runnable() {
-        @Override
-        public void run() {
-            PayloadAction payloadAction = new PayloadAction();
-            Conservation currentConservation = sharedPrefManager.getCurrentConservation();
-            payloadAction.setCode(currentConservation.getCode());
-            payloadAction.setAction(CONSTS.STOP_CHATTING);
-            payloadAction.setReceiverId((sharedPrefManager.getCurrentConservation().getUserId_1().
-                    equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).getId());
-            payloadAction.setReceiverType(CONSTS.MESSAGE_PRIVATE);
-            sendAction(payloadAction);
-        }
-    };
 
     private static String getElapsedTime(Date lastActive) {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
@@ -267,27 +253,26 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
     @Override
     public void onPause() {
         super.onPause();
-        WebSocketManager.getInstance(ChatActivity.this).removeObserver(this);
+        WebSocketManager.getInstance(ChatGroupActivity.this).removeObserver(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        WebSocketManager.getInstance(ChatActivity.this).addObserver(this);
+        WebSocketManager.getInstance(ChatGroupActivity.this).addObserver(this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+        setContentView(R.layout.activity_chat_group);
         retrofitClient = RetrofitClient.getInstance(getApplicationContext());
         tokenManager = retrofitClient.getTokenManager();
         retrofit = retrofitClient.getRetrofit();
-        sharedPrefManager = new SharedPrefManager(ChatActivity.this);
+        sharedPrefManager = new SharedPrefManager(ChatGroupActivity.this);
         // Initialize views
         layoutAttach = findViewById(R.id.layoutAttach);
         layoutAudio = findViewById(R.id.layoutAudio);
-        layoutEmoji = findViewById(R.id.layoutEmoji);
         layoutSend = findViewById(R.id.layoutSend);
         imageBack = findViewById(R.id.imageBack);
         inputMessage = findViewById(R.id.inputMessage);
@@ -311,16 +296,24 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
             ic_active.setVisibility(View.GONE);
         }
         EmojiManager.install(new GoogleEmojiProvider());
+        layoutEmoji = findViewById(R.id.layoutEmoji);
+        layoutEmoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendGroupMessage(sharedPrefManager.getCurrentConservation().getGroupId(),
+                        new PayloadMessage(layoutEmoji.getText().toString(), sharedPrefManager.getCurrentConservation().getCode(), CONSTS.MESSAGE_PRIVATE, null, sharedPrefManager.getCurrentConservation().getGroupId(), null));
+            }
+        });
 
 //        rcMessages.setHasFixedSize(true);
         chatAdapter = new ChatAdapter(rcMessages, this, messages, apiService, retrofitClient, new ChatAdapter.MessageClickListener() {
             @Override
             public void onImageClicked(String imageUrl) {
-                Dialog dialog = new Dialog(ChatActivity.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+                Dialog dialog = new Dialog(ChatGroupActivity.this, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
                 dialog.setContentView(R.layout.dialog_image_preview);
                 ImageView imagePreview = dialog.findViewById(R.id.imagePreview);
                 ImageButton btnClose = dialog.findViewById(R.id.btnClose);
-                Glide.with(ChatActivity.this).load(imageUrl.replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(imagePreview);
+                Glide.with(ChatGroupActivity.this).load(imageUrl.replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(imagePreview);
                 btnClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -387,21 +380,11 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                typingHandler.removeCallbacks(typingRunnable);
-                PayloadAction payloadAction = new PayloadAction();
-                Conservation currentConservation = sharedPrefManager.getCurrentConservation();
-                payloadAction.setCode(currentConservation.getCode());
-                payloadAction.setAction(CONSTS.CHATTING);
-                payloadAction.setReceiverId((sharedPrefManager.getCurrentConservation().getUserId_1().
-                        equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).getId());
-                payloadAction.setReceiverType(CONSTS.MESSAGE_PRIVATE);
-                sendAction(payloadAction);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                typingHandler.removeCallbacks(typingRunnable);
-                typingHandler.postDelayed(typingRunnable, 2000);
+
                 if (s.toString().isEmpty()) {
                     // No text is present, show attach and audio layouts, hide send layout
                     layoutAttach.setVisibility(View.VISIBLE);
@@ -447,7 +430,7 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
         imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivities(new Intent[]{new Intent(ChatActivity.this, MainActivity.class)});
+                startActivities(new Intent[]{new Intent(ChatGroupActivity.this, MainActivity.class)});
             }
         });
     }
@@ -502,7 +485,6 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
                         recorder.stop();
                         recorder.release();
                         recorder = null;
-
                         // Remove any pending posts of Runnable r that are in the message queue
                         handler.removeCallbacks(runnable);
                     }
@@ -579,12 +561,9 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
         String message = inputMessage.getText().toString();
         if (!message.isEmpty()) {
             if (sharedPrefManager.getCurrentConservation().getGroupId() == null || sharedPrefManager.getCurrentConservation().getGroupId().trim().equals("")) {
-                sendPrivateMessage(sharedPrefManager.getCurrentConservation().getUserId_1().equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUserId_2() : sharedPrefManager.getCurrentConservation().getUserId_1(),
-                        new PayloadMessage(inputMessage.getText().toString(), sharedPrefManager.getCurrentConservation().getCode(), CONSTS.MESSAGE_PRIVATE, null, null, null)
+                sendGroupMessage(sharedPrefManager.getCurrentConservation().getGroupId(),
+                        new PayloadMessage(inputMessage.getText().toString(), sharedPrefManager.getCurrentConservation().getCode(), CONSTS.MESSAGE_PRIVATE, null, sharedPrefManager.getCurrentConservation().getGroupId(), null)
                 );
-                Log.d("user1", sharedPrefManager.getCurrentConservation().getUserId_1() + "");
-                Log.d("user2", sharedPrefManager.getCurrentConservation().getUserId_2() + "");
-                Log.d("current", sharedPrefManager.getUser().getId() + "");
                 inputMessage.setText("");  // Clear the input field
             }
 
@@ -639,7 +618,7 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
         if (resultCode == RESULT_OK && data != null) {
             List<Uri> arrayList = data.getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA);
             for (Uri uri : arrayList) {
-                uploadFile(getRealPathFromURI(ChatActivity.this, uri),
+                uploadFile(getRealPathFromURI(ChatGroupActivity.this, uri),
                         sharedPrefManager.getCurrentConservation() != null ? sharedPrefManager.getCurrentConservation().getCode() : "12021", determineFileCategory(uri));
             }
         }
@@ -669,13 +648,13 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
                     processBar.setVisibility(View.GONE);
                 } else {
                     processBar.setVisibility(View.GONE);
-                    Toast.makeText(ChatActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatGroupActivity.this, "fail", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<PagedResultDto<Message>> call, Throwable t) {
-                Toast.makeText(ChatActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatGroupActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -687,13 +666,13 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
             public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                 } else {
-                    Toast.makeText(ChatActivity.this, "fail send message", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatGroupActivity.this, "fail send message", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(ChatActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatGroupActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -712,27 +691,27 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
                         if (sharedPrefManager.getCurrentConservation().getGroupId() == null || sharedPrefManager.getCurrentConservation().getGroupId().trim().equals("")) {
                             currentFile.setCreateAt(null);
                             currentFile.setUpdateAt(null);
-                            sendPrivateMessage(sharedPrefManager.getCurrentConservation().getUserId_1().equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUserId_2() : sharedPrefManager.getCurrentConservation().getUserId_1(),
-                                    new PayloadMessage(currentFile.getUrl(), sharedPrefManager.getCurrentConservation().getCode(), Type, null, null, currentFile)
+                            sendGroupMessage(sharedPrefManager.getCurrentConservation().getGroupId(),
+                                    new PayloadMessage(currentFile.getUrl(), sharedPrefManager.getCurrentConservation().getCode(), Type, null, sharedPrefManager.getCurrentConservation().getGroupId(), currentFile)
                             );
                         }
                     } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(ChatActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatGroupActivity.this, "fail", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<com.example.chatapp.Model.File.File> call, Throwable t) {
-                Toast.makeText(ChatActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatGroupActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public void sendPrivateMessage(String recipientId, PayloadMessage message) {
-        apiService.sendPrivateMessage(recipientId, message).enqueue(new retrofit2.Callback<Message>() {
+    public void sendGroupMessage(String groupId, PayloadMessage message) {
+        apiService.sendGroupMessage(groupId, message).enqueue(new retrofit2.Callback<Message>() {
             @Override
             public void onResponse(retrofit2.Call<Message> call, retrofit2.Response<Message> response) {
                 if (response.isSuccessful()) {
@@ -746,13 +725,13 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(ChatActivity.this, "fail send message", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatGroupActivity.this, "fail send message", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<Message> call, Throwable t) {
-                Toast.makeText(ChatActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChatGroupActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

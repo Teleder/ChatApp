@@ -1,29 +1,26 @@
 package com.example.chatapp.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.chatapp.Dtos.UserProfileDto;
-import com.example.chatapp.Model.Conservation.Conservation;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.chatapp.Dtos.LoginDto;
+import com.example.chatapp.Dtos.LoginInputDto;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Retrofit.TokenManager;
-import com.example.chatapp.Dtos.LoginDto;
-import com.example.chatapp.Dtos.LoginInputDto;
 import com.example.chatapp.Retrofit.WebSocketManager;
 
 import retrofit2.Call;
@@ -32,18 +29,17 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
-    private RetrofitClient retrofitClient;
-    private TokenManager tokenManager;
-    private Retrofit retrofit;
     SharedPrefManager sharedPrefManager;
-
     Button btnLogin;
     APIService apiService;
     EditText email;
     EditText password;
     ProgressBar processBar;
     WebSocketManager webSocketManager;
-    private boolean isWebSocketConnected = false;
+    private RetrofitClient retrofitClient;
+    private TokenManager tokenManager;
+    private Retrofit retrofit;
+    private final boolean isWebSocketConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +49,10 @@ public class LoginActivity extends AppCompatActivity {
         tokenManager = retrofitClient.getTokenManager();
         retrofit = retrofitClient.getRetrofit();
         sharedPrefManager = new SharedPrefManager(getApplicationContext());
-        email = (EditText) findViewById(R.id.inputEmail);
-        password = (EditText) findViewById(R.id.inputPassword);
-        btnLogin = (Button) findViewById(R.id.buttonSignIn);
-        processBar = (ProgressBar)  findViewById(R.id.processBar);
+        email = findViewById(R.id.inputEmail);
+        password = findViewById(R.id.inputPassword);
+        btnLogin = findViewById(R.id.buttonSignIn);
+        processBar = findViewById(R.id.processBar);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     private void login() {
         final String emailuser = email.getText().toString();
         final String pass = password.getText().toString();
@@ -85,13 +82,13 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         apiService = retrofit.create(APIService.class);
-        apiService.loginUser(new LoginInputDto(emailuser,pass)).enqueue(new Callback<LoginDto>() {
+        apiService.loginUser(new LoginInputDto(emailuser, pass)).enqueue(new Callback<LoginDto>() {
             @Override
             public void onResponse(Call<LoginDto> call, Response<LoginDto> response) {
                 processBar.setVisibility(View.VISIBLE);
                 if (response.isSuccessful()) {
                     try {
-                        tokenManager.saveTokens(response.body().getAccessToken(), response.body().getRefreshToken() );
+                        tokenManager.saveTokens(response.body().getAccessToken(), response.body().getRefreshToken());
                         sharedPrefManager.saveUser(response.body().getUser());
                         Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         createNotificationChannel();
@@ -112,6 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Your Channel Name";

@@ -59,6 +59,8 @@ public interface APIService {
     );
     @POST("messages/privateMessage/{recipientId}")
     Call<Message> sendPrivateMessage(@Path("recipientId") String recipientId, @Body PayloadMessage message);
+    @POST("groups/groupMessage/{groupId}")
+    Call<Message> sendGroupMessage(@Path("groupId") String groupId, @Body PayloadMessage message);
     @GET("messages/{code}")
     Call<PagedResultDto<Message>> findMessagesWithPaginationAndSearch(
             @Path("code") String code,
