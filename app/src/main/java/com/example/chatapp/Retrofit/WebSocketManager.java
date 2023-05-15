@@ -55,6 +55,9 @@ public class WebSocketManager {
                     reconnect();
                     break;
             }
+        }, throwable -> {
+            // Trình xử lý lỗi
+            throwable.printStackTrace();
         });
     }
 

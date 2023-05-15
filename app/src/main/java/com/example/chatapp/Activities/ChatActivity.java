@@ -70,6 +70,9 @@ import com.vanniktech.emoji.google.GoogleEmojiProvider;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -139,7 +142,7 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
         Type socketPayloadType = new TypeToken<SocketPayload<Object>>() {
         }.getType();
         SocketPayload socketPayload = gson.fromJson(message, socketPayloadType);
-        if (socketPayload == null)
+        if (socketPayload == null || socketPayload.getType() == null)
             return;
         if ( socketPayload.getType().equals(CONSTS.MESSAGE_PRIVATE) || socketPayload.getType().equals(CONSTS.MESSAGE_GROUP)) {
             gson = new Gson();
@@ -751,9 +754,8 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
 
         long years = months / 12;
         if (years <= 1) {
-            return "1 năm";
+            return "1 years";
         }
-
         return "a long time";
     }
 

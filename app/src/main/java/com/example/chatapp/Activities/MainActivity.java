@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
             @Override
             public void run() {
                 for (Contact con : sharedPrefManager.getUser().getList_contact()) {
-                    if (con.getUserId().equals(socketPayload.getId())) {
+                    if (socketPayload.getActive() != null && con.getUserId().equals(socketPayload.getId()) && socketPayload.getActive()) {
                         con.getUser().setActive(socketPayload.getActive().booleanValue());
                         lastMessageAdapter.notifyDataSetChanged();
                     }
