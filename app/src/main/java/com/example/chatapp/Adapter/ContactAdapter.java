@@ -54,10 +54,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
         holder.tvDisplayName.setText(userSearchDto.getDisplayName());
         holder.tvBio.setText(userSearchDto.getBio());
         holder.userId.setText(userSearchDto.getId());
-        holder.btnAddFriend.setOnClickListener(new View.OnClickListener() {
+        holder.btnUnFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnFriend(holder.userId.getText().toString());
+                UnFriend(holder.userId.getText().toString(), holder);
 //                Toast.makeText(context, "addFriend", Toast.LENGTH_SHORT).show();
             }
         });
@@ -74,14 +74,14 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
     public class ContactHolder extends RecyclerView.ViewHolder {
         private ImageView avatar;
         private TextView tvDisplayName, tvBio, userId;
-        private Button btnAddFriend;
+        private Button btnUnFriend;
 
         public ContactHolder(View itemView) {
             super(itemView);
             avatar = itemView.findViewById(R.id.imgUser);
             tvDisplayName = itemView.findViewById(R.id.tvNameUser);
             tvBio = itemView.findViewById(R.id.tvBioUser);
-            btnAddFriend = itemView.findViewById(R.id.btnUnFriend);
+            btnUnFriend = itemView.findViewById(R.id.btnUnFriend);
             userId = itemView.findViewById(R.id.id_User);
         }
     }
@@ -90,7 +90,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
         this.arrList = contactModelList;
         notifyDataSetChanged();
     }
-    private void UnFriend(String id)
+    private void UnFriend(String id, ContactHolder holder)
     {
         apiService = retrofit.create(APIService.class);
         apiService.UnFriend(id).enqueue(new Callback<Boolean>() {
@@ -98,9 +98,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
                     try {
-                        Toast.makeText(context, "Unfriend success", Toast.LENGTH_SHORT).show();
-
-//                        finish();
+                        holder.btnUnFriend.setText("Đã hủy kết bạn");
                     } catch (RuntimeException e) {
                         e.printStackTrace();
                     }

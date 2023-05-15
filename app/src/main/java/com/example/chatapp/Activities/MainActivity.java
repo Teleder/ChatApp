@@ -9,11 +9,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.chatapp.Adapter.LastMessageAdapter;
-import com.example.chatapp.Adapter.WaitingAcceptContactAdapter;
 import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.R;
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.fabNewChat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivities(new Intent[]{new Intent(MainActivity.this, UsersActivity.class)});
+                startActivities(new Intent[]{new Intent(MainActivity.this, NewMessageActivity.class)});
             }
         });
         findViewById(R.id.imageProfile).setOnClickListener(new View.OnClickListener() {

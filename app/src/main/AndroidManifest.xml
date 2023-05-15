@@ -45,7 +45,7 @@
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Activities.UsersActivity"
+            android:name=".Activities.NewMessageActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity

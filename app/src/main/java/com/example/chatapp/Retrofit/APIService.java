@@ -6,6 +6,7 @@ import com.example.chatapp.Dtos.LoginInputDto;
 import com.example.chatapp.Dtos.PagedResultDto;
 import com.example.chatapp.Dtos.UpdateInfoUserDto;
 import com.example.chatapp.Dtos.UserDto;
+import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Dtos.UserSearchDto;
 import com.example.chatapp.Model.User.Contact;
 
@@ -38,4 +39,8 @@ public interface APIService {
     Call<Boolean> UnFriend(@Query("contactId") String contactId);
     @GET("users/search")
     Call<List<UserSearchDto>> SearchFriend(@Query("searchText") String searchText);
+    @PATCH("users/add-contact")
+    Call<Boolean> AddFriend(@Query("contactId") String contactId);
+    @PATCH("users/remove-request-friend")
+    Call<UserProfileDto> RemoveRequestAddFriend(@Query("contactId") String contactId);
 }

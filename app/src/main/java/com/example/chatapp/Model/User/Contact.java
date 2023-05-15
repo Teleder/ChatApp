@@ -3,10 +3,20 @@ package com.example.chatapp.Model.User;
 public class Contact {
     User user;
     Status status;
+    String userId;
 
-    public Contact(User user, Status status) {
+    public Contact(User user, Status status, String userId) {
         this.user = user;
         this.status = status;
+        this.userId = userId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public User getUser() {
