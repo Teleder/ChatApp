@@ -38,7 +38,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.chatapp.Adapter.ActionSender;
 import com.example.chatapp.Adapter.ChatAdapter;
 import com.example.chatapp.Dialog.VideoPreviewDialog;
 import com.example.chatapp.Dtos.PagedResultDto;
@@ -83,7 +82,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Retrofit;
 
 
-public class ChatActivity extends AppCompatActivity implements MessageObserver, ActionSender {
+public class ChatActivity extends AppCompatActivity implements MessageObserver {
     private static final int REQUEST_CODE_PERMISSIONS = 100;
     RecyclerView rcMessages;
     SharedPrefManager sharedPrefManager;
@@ -680,7 +679,7 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver, 
         });
     }
 
-    @Override
+
     public void sendAction(PayloadAction action) {
         apiService.sendAction(action).enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override

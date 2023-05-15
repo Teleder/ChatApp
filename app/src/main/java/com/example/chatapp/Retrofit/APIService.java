@@ -8,24 +8,29 @@ import com.example.chatapp.Dtos.PayloadAction;
 import com.example.chatapp.Dtos.PayloadMessage;
 import com.example.chatapp.Dtos.PayloadAction;
 import com.example.chatapp.Dtos.PayloadMessage;
+import com.example.chatapp.Dtos.RoleDto;
 import com.example.chatapp.Dtos.UpdateInfoUserDto;
 import com.example.chatapp.Dtos.UserDto;
 import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.File.File;
+import com.example.chatapp.Model.Group.Group;
 import com.example.chatapp.Model.Message.Message;
 import com.example.chatapp.Model.User.Contact;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -74,4 +79,9 @@ public interface APIService {
     Call<Boolean> AddFriend(@Query("contactId") String contactId);
     @PATCH("users/remove-request-friend")
     Call<UserProfileDto> RemoveRequestAddFriend(@Query("contactId") String contactId);
+    @POST("{id}/create-role")
+    @Headers({"Content-Type: application/json"})
+    CompletableFuture<Group> createRoleForGroup(@Path("id") String groupId, @Body RoleDto roleRequest);
+    @DELETE("{id}/delete-role")
+    CompletableFuture<Void> deleteRoleForGroup(@Path("id") String groupId, @Query("roleName") String roleName);
 }

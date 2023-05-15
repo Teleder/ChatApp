@@ -38,7 +38,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.chatapp.Adapter.ActionSender;
 import com.example.chatapp.Adapter.ChatAdapter;
 import com.example.chatapp.Dialog.VideoPreviewDialog;
 import com.example.chatapp.Dtos.PagedResultDto;
@@ -56,7 +55,6 @@ import com.example.chatapp.Utils.CONSTS;
 import com.example.chatapp.Utils.MessageObserver;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.vanniktech.emoji.EmojiEditText;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiPopup;
 import com.vanniktech.emoji.google.GoogleEmojiProvider;
@@ -83,7 +81,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import retrofit2.Retrofit;
 
 
-public class ChatGroupActivity extends AppCompatActivity implements MessageObserver, ActionSender {
+public class ChatGroupActivity extends AppCompatActivity implements MessageObserver {
     private static final int REQUEST_CODE_PERMISSIONS = 100;
     RecyclerView rcMessages;
     SharedPrefManager sharedPrefManager;
@@ -659,7 +657,6 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         });
     }
 
-    @Override
     public void sendAction(PayloadAction action) {
         apiService.sendAction(action).enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override

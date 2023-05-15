@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/remove_member"
+        android:title="Remove Member" />
+
+    <item
+        android:id="@+id/block_member"
+        android:title="Block Member" />
+
+    <item
+        android:id="@+id/set_role_member"
+        android:title="Set Role Member" />
+</menu>
