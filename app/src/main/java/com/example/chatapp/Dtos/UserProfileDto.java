@@ -7,6 +7,7 @@ import com.example.chatapp.Model.User.Contact;
 import com.example.chatapp.Model.User.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class UserProfileDto {
@@ -23,8 +24,9 @@ public class UserProfileDto {
     private List<Conservation> conservations = new ArrayList<>();
     private User.Role role;
     private List<Contact> list_contact = new ArrayList<>();
+    private Date lastActiveAt;
 
-    public UserProfileDto(String id, String firstName, String lastName, String phone, String email, String bio, File avatar, File QR, String displayName, List<Block> blocks, List<Conservation> conservations, User.Role role, List<Contact> list_contact) {
+    public UserProfileDto(String id, String firstName, String lastName, String phone, String email, String bio, File avatar, File QR, String displayName, List<Block> blocks, List<Conservation> conservations, User.Role role, List<Contact> list_contact, Date lastActiveAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -38,6 +40,15 @@ public class UserProfileDto {
         this.conservations = conservations;
         this.role = role;
         this.list_contact = list_contact;
+        this.lastActiveAt = lastActiveAt;
+    }
+
+    public Date getLastActiveAt() {
+        return lastActiveAt;
+    }
+
+    public void setLastActiveAt(Date lastActiveAt) {
+        this.lastActiveAt = lastActiveAt;
     }
 
     public List<Contact> getList_contact() {

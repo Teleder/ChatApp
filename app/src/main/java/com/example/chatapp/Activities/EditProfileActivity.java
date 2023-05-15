@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.example.chatapp.Dtos.UpdateInfoUserDto;
 import com.example.chatapp.Dtos.UserDto;
 import com.example.chatapp.Dtos.UserProfileDto;
+import com.example.chatapp.Model.File.File;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
@@ -34,7 +35,6 @@ import com.example.chatapp.Retrofit.TokenManager;
 import com.example.chatapp.Utils.CONSTS;
 import com.example.chatapp.Utils.RealPathUtil;
 
-import java.io.File;
 import java.io.IOException;
 
 import okhttp3.MediaType;
@@ -120,6 +120,8 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
         apiService = retrofitClient.getRetrofit().create(APIService.class);
+        File file = new File();
+
 //        String IMAGE_PATH = RealPathUtil.getRealPath(this, mUri);
 //        File file = new File(IMAGE_PATH);
 //        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -133,6 +135,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         userProfileDto.setFirstName(response.body().getFirstName());
                         userProfileDto.setLastName(response.body().getLastName());
                         userProfileDto.setBio(response.body().getBio());
+                        userProfileDto.setDisplayName(response.body().getFirstName()+" "+response.body().getLastName());
                         Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
                         finish();
                         Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);

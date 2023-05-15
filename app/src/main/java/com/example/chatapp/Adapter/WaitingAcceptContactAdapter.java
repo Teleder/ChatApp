@@ -49,11 +49,11 @@ public class WaitingAcceptContactAdapter extends RecyclerView.Adapter<WaitingAcc
     @Override
     public void onBindViewHolder(ContactHolder holder, int position) {
         Contact contactModel = arrList.get(position);
-        if (contactModel.getUser().getAvatar() != null)
-            Glide.with(context).load(contactModel.getUser().getAvatar()).into(holder.avatar);
-        holder.tvDisplayName.setText(contactModel.getUser().getDisplayName());
-        holder.tvBio.setText(contactModel.getUser().getBio());
-        holder.userId.setText(contactModel.getUser().getId());
+//        if (contactModel.getUser().getAvatar() != null)
+//            Glide.with(context).load(contactModel.getUser().getAvatar()).into(holder.avatar);
+//        holder.tvDisplayName.setText(contactModel.getUser().getDisplayName());
+//        holder.tvBio.setText(contactModel.getUser().getBio());
+//        holder.userId.setText(contactModel.getUser().getId());
         holder.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,6 +106,7 @@ public class WaitingAcceptContactAdapter extends RecyclerView.Adapter<WaitingAcc
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
                     try {
+
                         Toast.makeText(context, "Cancel success", Toast.LENGTH_SHORT).show();
 //                        finish();
                     } catch (RuntimeException e) {

@@ -6,9 +6,12 @@ import com.example.chatapp.Dtos.LoginInputDto;
 import com.example.chatapp.Dtos.PagedResultDto;
 import com.example.chatapp.Dtos.PayloadAction;
 import com.example.chatapp.Dtos.PayloadMessage;
+import com.example.chatapp.Dtos.PayloadAction;
+import com.example.chatapp.Dtos.PayloadMessage;
 import com.example.chatapp.Dtos.UpdateInfoUserDto;
 import com.example.chatapp.Dtos.UserDto;
 import com.example.chatapp.Dtos.UserBasicDto;
+import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.File.File;
 import com.example.chatapp.Model.Message.Message;
 import com.example.chatapp.Model.User.Contact;
@@ -55,7 +58,7 @@ public interface APIService {
             @Part MultipartBody.Part file
     );
     @POST("messages/privateMessage/{recipientId}")
-        Call<Message> sendPrivateMessage(@Path("recipientId") String recipientId, @Body PayloadMessage message);
+    Call<Message> sendPrivateMessage(@Path("recipientId") String recipientId, @Body PayloadMessage message);
     @GET("messages/{code}")
     Call<PagedResultDto<Message>> findMessagesWithPaginationAndSearch(
             @Path("code") String code,
@@ -65,4 +68,8 @@ public interface APIService {
     );
     @POST("messages/sendAction")
     Call<ResponseBody> sendAction(@Body PayloadAction payloadAction);
+    @PATCH("users/add-contact")
+    Call<Boolean> AddFriend(@Query("contactId") String contactId);
+    @PATCH("users/remove-request-friend")
+    Call<UserProfileDto> RemoveRequestAddFriend(@Query("contactId") String contactId);
 }
