@@ -98,5 +98,6 @@ dependencies {
     // audio
     implementation 'com.vanniktech:emoji-google:0.7.0'
 
+    implementation 'com.google.android.exoplayer:exoplayer:2.12.0'
 
 }

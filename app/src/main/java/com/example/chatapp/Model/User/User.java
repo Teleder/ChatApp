@@ -5,6 +5,7 @@ import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.Model.File.File;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 public class User extends BaseModel {
@@ -16,7 +17,18 @@ public class User extends BaseModel {
     private String email;
     private String bio;
 
+    public Date getLastActiveAt() {
+        return lastActiveAt;
+    }
+
+    public void setLastActiveAt(Date lastActiveAt) {
+        this.lastActiveAt = lastActiveAt;
+    }
+
+    Date lastActiveAt;
+
     private File avatar;
+
     private String QR;
     private List<Block> list_block;
 

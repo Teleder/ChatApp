@@ -4,9 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -14,28 +17,63 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.chatapp.Adapter.LastMessageAdapter;
 import com.example.chatapp.Adapter.WaitingAcceptContactAdapter;
+import com.example.chatapp.Dtos.SocketPayload;
+import com.example.chatapp.Dtos.UserOnlineOfflinePayload;
 import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.Conservation.Conservation;
+import com.example.chatapp.Model.User.Contact;
+import com.example.chatapp.Model.User.User;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Retrofit.TokenManager;
 import com.example.chatapp.Retrofit.WebSocketManager;
+import com.example.chatapp.Utils.CONSTS;
+import com.example.chatapp.Utils.MessageObserver;
+import com.example.chatapp.Utils.WebSocketService;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MessageObserver {
     private RetrofitClient retrofitClient;
+    private boolean isWebSocketConnected = false;
+
     private TokenManager tokenManager;
     private Retrofit retrofit;
     SharedPrefManager sharedPrefManager;
-    ImageView imageViewprofile;
+    ImageView imageViewProfile;
     WebSocketManager webSocketManager;
     RecyclerView lastMessages;
     LastMessageAdapter lastMessageAdapter;
     List<Conservation> listConservations;
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+        webSocketManager = WebSocketManager.getInstance(MainActivity.this);
+        UserProfileDto userProfileDto = sharedPrefManager.getUser();
+        Intent intent = new Intent(this, WebSocketService.class);
+        intent.setAction("CONNECT");
+        intent.putExtra("user_id", userProfileDto.getId());
+        startService(intent);
+        if (!isWebSocketConnected) {
+            webSocketManager.connect(userProfileDto.getId());
+            webSocketManager.subscribeToPrivateMessages(userProfileDto.getId());
+            Log.d("currentId", userProfileDto.getId());
+            for (Conservation a : userProfileDto.getConservations()) {
+                if (a.getGroupId() != null && !a.getGroupId().equals("")) {
+                    webSocketManager.subscribeToGroupMessages(a.getCode());
+                }
+            }
+            isWebSocketConnected = true;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPrefManager = new SharedPrefManager(getApplicationContext());
         UserProfileDto userProfileDto = sharedPrefManager.getUser();
         lastMessages = (RecyclerView) findViewById(R.id.conversationRecyclerView);
-        if(userProfileDto.getConservations().size() > 0)
-        {
+        if (userProfileDto.getConservations().size() > 0) {
             lastMessages.setVisibility(View.VISIBLE);
             listConservations = userProfileDto.getConservations();
             lastMessageAdapter = new LastMessageAdapter(MainActivity.this, listConservations);
@@ -59,9 +96,6 @@ public class MainActivity extends AppCompatActivity {
             lastMessageAdapter.notifyDataSetChanged();
             findViewById(R.id.processBar).setVisibility(View.GONE);
         }
-        webSocketManager = WebSocketManager.getInstance();
-        webSocketManager.connect(userProfileDto.getId());
-        //webSocketManager.subscribeToPrivateMessages(userProfileDto.getId());
         findViewById(R.id.fabNewChat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,13 +116,48 @@ public class MainActivity extends AppCompatActivity {
                 startActivities(new Intent[]{new Intent(MainActivity.this, ContactActivity.class)});
             }
         });
-        imageViewprofile = findViewById(R.id.imageProfile);
+        imageViewProfile = findViewById(R.id.imageProfile);
         if (userProfileDto.getAvatar() == null)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Glide.with(getApplicationContext()).load(getApplicationContext().getDrawable(R.drawable.user)).into(imageViewprofile);
-            }
-        else {
-                Glide.with(getApplicationContext()).load(userProfileDto.getAvatar()).into(imageViewprofile);
+                Glide.with(getApplicationContext()).load(getApplicationContext().getDrawable(R.drawable.user)).into(imageViewProfile);
+            } else {
+                Glide.with(getApplicationContext()).load(userProfileDto.getAvatar()).into(imageViewProfile);
             }
     }
+
+    @Override
+    public void onMessageReceived(String message) {
+        Gson gson = new Gson();
+        Type status = new TypeToken<UserOnlineOfflinePayload>() {
+        }.getType();
+        UserOnlineOfflinePayload socketPayload = gson.fromJson(message, status);
+        if (socketPayload == null)
+            return;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (Contact con : sharedPrefManager.getUser().getList_contact()) {
+                    if (con.getUserId().equals(socketPayload.getId())) {
+                        con.getUser().setActive(socketPayload.getActive().booleanValue());
+                        lastMessageAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        WebSocketManager.getInstance(MainActivity.this).removeObserver(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        WebSocketManager.getInstance(MainActivity.this).addObserver(this);
+    }
+
 }

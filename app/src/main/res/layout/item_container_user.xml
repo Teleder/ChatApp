@@ -24,7 +24,7 @@
         app:layout_constraintTop_toTopOf="@id/imageProfile"
         />
     <TextView
-        android:id="@+id/textName"
+        android:id="@+id/txtName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_8sdp"

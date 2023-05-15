@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/fileIcon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:src="@android:drawable/ic_menu_save" />

@@ -2,15 +2,21 @@ package com.example.chatapp.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.chatapp.Dtos.UserProfileDto;
+import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
@@ -18,6 +24,7 @@ import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Retrofit.TokenManager;
 import com.example.chatapp.Dtos.LoginDto;
 import com.example.chatapp.Dtos.LoginInputDto;
+import com.example.chatapp.Retrofit.WebSocketManager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText email;
     EditText password;
     ProgressBar processBar;
+    WebSocketManager webSocketManager;
+    private boolean isWebSocketConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.inputPassword);
         btnLogin = (Button) findViewById(R.id.buttonSignIn);
         processBar = (ProgressBar)  findViewById(R.id.processBar);
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                         tokenManager.saveTokens(response.body().getAccessToken(), response.body().getRefreshToken() );
                         sharedPrefManager.saveUser(response.body().getUser());
                         Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                        createNotificationChannel();
                         finish();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -100,5 +111,16 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Your Channel Name";
+            String description = "Your Channel Description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("20022023", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

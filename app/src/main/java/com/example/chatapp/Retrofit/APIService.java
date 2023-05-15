@@ -4,6 +4,7 @@ import com.example.chatapp.Dtos.CreateUserDto;
 import com.example.chatapp.Dtos.LoginDto;
 import com.example.chatapp.Dtos.LoginInputDto;
 import com.example.chatapp.Dtos.PagedResultDto;
+import com.example.chatapp.Dtos.PayloadAction;
 import com.example.chatapp.Dtos.PayloadMessage;
 import com.example.chatapp.Dtos.UpdateInfoUserDto;
 import com.example.chatapp.Dtos.UserDto;
@@ -53,7 +54,6 @@ public interface APIService {
             @Query("code") String code,
             @Part MultipartBody.Part file
     );
-
     @POST("messages/privateMessage/{recipientId}")
         Call<Message> sendPrivateMessage(@Path("recipientId") String recipientId, @Body PayloadMessage message);
     @GET("messages/{code}")
@@ -63,4 +63,6 @@ public interface APIService {
             @Query("size") int size,
             @Query("content") String content
     );
+    @POST("messages/sendAction")
+    Call<ResponseBody> sendAction(@Body PayloadAction payloadAction);
 }

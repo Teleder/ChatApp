@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,7 @@ import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.Message.Message;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.SharedPrefManager;
+import com.example.chatapp.Retrofit.WebSocketManager;
 import com.example.chatapp.Utils.CONSTS;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -142,7 +144,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-
         switch (viewType) {
             case CONSTS.TYPE_SENT_TEXT:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat_text_sent, parent, false);
@@ -290,7 +291,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void bind(Message message) {
             textMessage.setText(message.getContent());
             textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
-            Glide.with(context).load(contact.getAvatar().getUrl()).into(imageProfile);
+               Glide.with(context).load(
+                    contact.getAvatar() == null ? R.drawable.ic_people_24 :
+                            contact.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)
+            ).into(imageProfile);;
         }
     }
 
@@ -315,7 +319,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void bind(Message message) {
             // TODO: Load image from message into imageMessage
             textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
-            Glide.with(context).load(message.getContent()).into(imageMessage);
+            Glide.with(context).load(message.getContent().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(imageMessage);
             imageMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -360,13 +364,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
         }
-
         public void bind(Message message) {
             // TODO: Load profile image from message into imageProfile
             // TODO: Load image from message into imageMessage
             textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
-            Glide.with(context).load(message.getContent()).into(imageMessage);
-            Glide.with(context).load(contact.getAvatar().getUrl()).into(imageProfile);
+            Glide.with(context).load(message.getContent().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(imageMessage);
+            Glide.with(context).load(
+                    contact.getAvatar() == null ? R.drawable.ic_people_24 :
+                            contact.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)
+            ).into(imageProfile);
             imageMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -448,7 +454,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public void bind(Message message) {
             textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
-            Glide.with(context).load(contact.getAvatar().getUrl()).into(imageProfile);
+               Glide.with(context).load(
+                    contact.getAvatar() == null ? R.drawable.ic_people_24 :
+                            contact.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)
+            ).into(imageProfile);;
             playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -484,7 +493,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             audioIcon = itemView.findViewById(R.id.audioIcon);
             textDateTime = itemView.findViewById(R.id.textDateTime);
             audioDuration = itemView.findViewById(R.id.audioDuration);
-
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -566,7 +574,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void bind(Message message) {
             // TODO: Load image from message into imageMessage
             textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
-            Glide.with(context).load(message.getContent()).into(stickerImage);
+            Glide.with(context).load(message.getContent().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(stickerImage);
         }
     }
 
@@ -593,8 +601,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             // TODO: Load profile image from message into imageProfile
             // TODO: Load image from message into imageMessage
             textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
-            Glide.with(context).load(message.getContent()).into(stickerImage);
-            Glide.with(context).load(contact.getAvatar().getUrl()).into(imageProfile);
+            Glide.with(context).load(message.getContent().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(stickerImage);
+               Glide.with(context).load(
+                    contact.getAvatar() == null ? R.drawable.ic_people_24 :
+                            contact.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)
+            ).into(imageProfile);;
 
         }
     }
@@ -656,7 +667,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void bind(Message message) {
             textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
             fileName.setText(message.getFile().getName());
-            Glide.with(context).load(contact.getAvatar().getUrl()).into(imageProfile);
+               Glide.with(context).load(
+                    contact.getAvatar() == null ? R.drawable.ic_people_24 :
+                            contact.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)
+            ).into(imageProfile);;
             fileIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -690,7 +704,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         popupMenu.show();
     }
 
-
     public interface MessageClickListener {
         void onImageClicked(String imageUrl);
 
@@ -700,4 +713,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         void onFileClicked(String fileUrl, String fileName);
     }
+
+
 }

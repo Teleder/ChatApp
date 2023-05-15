@@ -4,15 +4,19 @@ public class CONSTS {
     public static final String MY_IMAGES= "images";
     public final static String BASEURL = "192.168.1.33:8080";
     public final static String MESSAGE_PRIVATE = "USER";
-
     public final static String MESSAGE_GROUP = "GROUP";
     public final static String READ_RECEIPT = "read";
     public final static String DELIVERY_RECEIPT = "delivery";
-    public final static String CHATTING = "=CHATTING";
+    public final static String CHATTING = "CHATTING";
+    public final static String STOP_CHATTING = "STOP_CHATTING";
+    public final static String EMOJI = "EMOJI";
+    public final static String EDIT_MESSAGE = "EDIT_MESSAGE";
+    public final static String DELETE_MESSAGE = "DELETE_MESSAGE";
+
     public final static String CALL = "CALL";
-    public final static String  VIDEO = "VIDEO";
     public final static String IMAGE = "IMAGE";
     public final static String AUDIO = "AUDIO";
+    public final static String  VIDEO = "VIDEO";
     public final static String FILE = "FILE";
     public final static String CUSTOM = "CUSTOM";
     public final static String CALL_TYPE_VIDEO = "CALL_TYPE.VIDEO";
@@ -22,7 +26,7 @@ public class CONSTS {
     public final static String CATEGORY_CALL = "CATEGORY_CALL";
     public final static String DIRECT_CALL = "DIRECT_CALL";
     public final static String STICKER = "extension_sticker";
-
+    public final static String NEW_REACTION = "NEW_REACTION";
     // CONTACT
     public final static String BLOCK_CONTACT = "BLOCK_CONTACT";
     public final static String ADD_CONTACT = "ADD_CONTACT";
@@ -42,7 +46,6 @@ public class CONSTS {
     public final static String DENY_MEMBER_JOIN = "DENY_MEMBER_JOIN";
     public final static String CREATE_ROLE = "CREATE_ROLE";
     public final static String DELETE_ROLE = "DELETE_ROLE";
-
     public static final int TYPE_SENT_TEXT = 0;
     public static final int TYPE_RECEIVED_TEXT = 1;
     public static final int TYPE_SENT_IMAGE = 2;

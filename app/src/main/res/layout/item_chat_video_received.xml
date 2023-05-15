@@ -19,8 +19,8 @@
 
     <ImageView
         android:id="@+id/videoThumbnail"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_100sdp"
         android:layout_toEndOf="@id/imageProfile"
         android:layout_toRightOf="@+id/imageProfile"
         android:layout_marginLeft="@dimen/_12sdp"
