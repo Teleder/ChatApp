@@ -12,10 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.chatapp.Adapter.ContactAdapter;
 import com.example.chatapp.Adapter.FriendMessAdapter;
 import com.example.chatapp.Dtos.PagedResultDto;
-import com.example.chatapp.Dtos.UserSearchDto;
+import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
@@ -36,7 +35,7 @@ public class ListFriendActivity extends Fragment {
     SharedPrefManager sharedPrefManager;
     APIService apiService;
     RecyclerView rcIcon;
-    List<UserSearchDto> arrayList;
+    List<UserBasicDto> arrayList;
     FriendMessAdapter friendMessAdapter;
     SearchView searchView;
     public ListFriendActivity(){
@@ -71,9 +70,9 @@ public class ListFriendActivity extends Fragment {
     }
     private void getContacts(String s,View view) {
         apiService = retrofitClient.getRetrofit().create(APIService.class);
-        apiService.getContacts(s==""?"":s,0, 1000).enqueue(new Callback<PagedResultDto<UserSearchDto>>() {
+        apiService.getContacts(s==""?"":s,0, 1000).enqueue(new Callback<PagedResultDto<UserBasicDto>>() {
             @Override
-            public void onResponse(Call<PagedResultDto<UserSearchDto>> call, Response<PagedResultDto<UserSearchDto>> response) {
+            public void onResponse(Call<PagedResultDto<UserBasicDto>> call, Response<PagedResultDto<UserBasicDto>> response) {
                 if (response.isSuccessful()) {
                     try {
                         arrayList = response.body().getData();
@@ -92,7 +91,7 @@ public class ListFriendActivity extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<PagedResultDto<UserSearchDto>> call, Throwable t) {
+            public void onFailure(Call<PagedResultDto<UserBasicDto>> call, Throwable t) {
                 Toast.makeText(view.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

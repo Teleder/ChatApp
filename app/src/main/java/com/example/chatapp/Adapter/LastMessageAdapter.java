@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.chatapp.Activities.ChatActivity;
 import com.example.chatapp.Activities.MainActivity;
-import com.example.chatapp.Activities.UsersActivity;
 import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.Model.User.Contact;

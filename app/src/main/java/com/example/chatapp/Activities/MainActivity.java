@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         findViewById(R.id.fabNewChat).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivities(new Intent[]{new Intent(MainActivity.this, UsersActivity.class)});
+                startActivities(new Intent[]{new Intent(MainActivity.this, NewMessageActivity.class)});
             }
         });
         findViewById(R.id.imageProfile).setOnClickListener(new View.OnClickListener() {

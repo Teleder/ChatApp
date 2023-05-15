@@ -12,11 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.chatapp.Activities.ChatActivity;
+import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.Dtos.UserProfileDto;
-import com.example.chatapp.Dtos.UserSearchDto;
-import com.example.chatapp.Model.Conservation.Conservation;
-import com.example.chatapp.Model.User.Contact;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.SharedPrefManager;
 
@@ -24,13 +21,13 @@ import java.util.List;
 
 public class FriendMessAdapter extends RecyclerView.Adapter<FriendMessAdapter.FriendHolder>{
     private Context context;
-    private List<UserSearchDto> arrList;
+    private List<UserBasicDto> arrList;
 
 
     SharedPrefManager sharedPrefManager;
     UserProfileDto userProfileDto;
 
-    public FriendMessAdapter(Context context, List<UserSearchDto> arrList) {
+    public FriendMessAdapter(Context context, List<UserBasicDto> arrList) {
         this.context = context;
         this.arrList = arrList;
         sharedPrefManager = new SharedPrefManager(context);
@@ -46,12 +43,12 @@ public class FriendMessAdapter extends RecyclerView.Adapter<FriendMessAdapter.Fr
 
     @Override
     public void onBindViewHolder(FriendMessAdapter.FriendHolder holder, int position) {
-        UserSearchDto userSearchDto = arrList.get(position);
-        if (userSearchDto.getAvatar() != null)
-            Glide.with(context).load(userSearchDto.getAvatar()).into(holder.avatar);
-        holder.tvDisplayName.setText(userSearchDto.getDisplayName());
-        holder.tvPhone.setText(userSearchDto.getPhone());
-        holder.userId.setText(userSearchDto.getId());
+        UserBasicDto UserBasicDto = arrList.get(position);
+        if (UserBasicDto.getAvatar() != null)
+            Glide.with(context).load(UserBasicDto.getAvatar()).into(holder.avatar);
+        holder.tvDisplayName.setText(UserBasicDto.getDisplayName());
+        holder.tvPhone.setText(UserBasicDto.getPhone());
+        holder.userId.setText(UserBasicDto.getId());
     }
 
     @Override

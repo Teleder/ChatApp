@@ -13,9 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.Dtos.UserProfileDto;
-import com.example.chatapp.Dtos.UserSearchDto;
-import com.example.chatapp.Model.User.Contact;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
@@ -30,14 +29,14 @@ import retrofit2.Retrofit;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchContactHolder> {
     private Context context;
-    private List<UserSearchDto> arrList;
+    private List<UserBasicDto> arrList;
     private RetrofitClient retrofitClient;
     private Retrofit retrofit;
     SharedPrefManager sharedPrefManager;
     UserProfileDto userProfileDto;
     APIService apiService;
 
-    public SearchAdapter(Context context, List<UserSearchDto> arrList) {
+    public SearchAdapter(Context context, List<UserBasicDto> arrList) {
         this.context = context;
         this.arrList = arrList;
         retrofitClient = RetrofitClient.getInstance(context);
@@ -55,15 +54,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchCont
 
     @Override
     public void onBindViewHolder(SearchAdapter.SearchContactHolder holder, int position) {
-        UserSearchDto userSearchDto = arrList.get(position);
-        if (userSearchDto.getAvatar() != null)
-            Glide.with(context).load(userSearchDto.getAvatar()).into(holder.avatar);
-        holder.tvDisplayName.setText(userSearchDto.getDisplayName());
-        holder.tvBio.setText(userSearchDto.getBio());
-        holder.userId.setText(userSearchDto.getId());
+        UserBasicDto UserBasicDto = arrList.get(position);
+        if (UserBasicDto.getAvatar() != null)
+            Glide.with(context).load(UserBasicDto.getAvatar()).into(holder.avatar);
+        holder.tvDisplayName.setText(UserBasicDto.getDisplayName());
+        holder.tvBio.setText(UserBasicDto.getBio());
+        holder.userId.setText(UserBasicDto.getId());
         //Kiem tra neu list contact khong co ai thi them button add friend
         if (userProfileDto.getList_contact().size() <= 0) {
-            if (!userSearchDto.getId().equals(userProfileDto.getId())) {
+            if (!UserBasicDto.getId().equals(userProfileDto.getId())) {
                 holder.btnAddFriend.setVisibility(View.VISIBLE);
             }
             holder.btnAddFriend.setOnClickListener(new View.OnClickListener() {
@@ -76,13 +75,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchCont
         } else {
 
             for (int i = 0; i < userProfileDto.getList_contact().size(); i++) {
-                if (userProfileDto.getList_contact().get(i).getUserId().equals(userSearchDto.getId())) {
+                if (userProfileDto.getList_contact().get(i).getUserId().equals(UserBasicDto.getId())) {
                     if (userProfileDto.getList_contact().get(i).getStatus().toString().equals("WAITING")) {
                         holder.btnUnfriend.setVisibility(View.VISIBLE);
                         holder.btnUnfriend.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                RemoveAddFriend(userSearchDto.getId(), holder);
+                                RemoveAddFriend(UserBasicDto.getId(), holder);
                             }
                         });
                     } else if (userProfileDto.getList_contact().get(i).getStatus().toString().equals("ACCEPT")) {
@@ -95,12 +94,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchCont
                         holder.btnAddFriend.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                AcceptFriend(userSearchDto.getId(),holder);
+                                AcceptFriend(UserBasicDto.getId(),holder);
                             }
                         });
                     }
                 } else {
-                    if (!userSearchDto.getId().equals(userProfileDto.getId())) {
+                    if (!UserBasicDto.getId().equals(userProfileDto.getId())) {
                         holder.btnAddFriend.setVisibility(View.VISIBLE);
                     }
                     holder.btnAddFriend.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +138,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchCont
         }
     }
 
-    public void setListenerList(List<UserSearchDto> contactModelList) {
+    public void setListenerList(List<UserBasicDto> contactModelList) {
         this.arrList = contactModelList;
         notifyDataSetChanged();
     }
