@@ -29,22 +29,23 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class ListFriendActivity extends Fragment {
-    private RetrofitClient retrofitClient;
-    private TokenManager tokenManager;
-    private Retrofit retrofit;
     SharedPrefManager sharedPrefManager;
     APIService apiService;
     RecyclerView rcIcon;
     List<UserBasicDto> arrayList;
     FriendMessAdapter friendMessAdapter;
     SearchView searchView;
-    public ListFriendActivity(){
+    private RetrofitClient retrofitClient;
+    private TokenManager tokenManager;
+    private Retrofit retrofit;
+
+    public ListFriendActivity() {
 
     }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        View view = inflater.inflate(R.layout.activity_contact_message, container,false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_contact_message, container, false);
         Context context = getActivity();
         retrofitClient = RetrofitClient.getInstance(view.getContext());
         tokenManager = retrofitClient.getTokenManager();
@@ -61,16 +62,17 @@ public class ListFriendActivity extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                getContacts(s,view);
+                getContacts(s, view);
                 return false;
             }
         });
 
         return view;
     }
-    private void getContacts(String s,View view) {
+
+    private void getContacts(String s, View view) {
         apiService = retrofitClient.getRetrofit().create(APIService.class);
-        apiService.getContacts(s==""?"":s,0, 1000).enqueue(new Callback<PagedResultDto<UserBasicDto>>() {
+        apiService.getContacts(s, 0, 1000).enqueue(new Callback<PagedResultDto<UserBasicDto>>() {
             @Override
             public void onResponse(Call<PagedResultDto<UserBasicDto>> call, Response<PagedResultDto<UserBasicDto>> response) {
                 if (response.isSuccessful()) {

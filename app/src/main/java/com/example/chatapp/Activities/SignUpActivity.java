@@ -1,7 +1,5 @@
 package com.example.chatapp.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,12 +9,14 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.chatapp.Dtos.CreateUserDto;
+import com.example.chatapp.Dtos.UserDto;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.TokenManager;
-import com.example.chatapp.Dtos.CreateUserDto;
-import com.example.chatapp.Dtos.UserDto;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,10 +32,10 @@ public class SignUpActivity extends AppCompatActivity {
     EditText email;
     EditText phone;
     EditText confirmpassword;
+    ProgressBar processBar;
     private RetrofitClient retrofitClient;
     private TokenManager tokenManager;
     private Retrofit retrofit;
-    ProgressBar processBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +50,14 @@ public class SignUpActivity extends AppCompatActivity {
                 startActivities(new Intent[]{new Intent(SignUpActivity.this, LoginActivity.class)});
             }
         });
-        btnsignup = (Button) findViewById(R.id.buttonSignUp);
-        firstname = (EditText) findViewById(R.id.inputFirstName);
-        lastname = (EditText) findViewById(R.id.inputLastName);
-        password = (EditText) findViewById(R.id.inputPassword);
-        confirmpassword = (EditText) findViewById(R.id.inputConfirmPassword);
-        email = (EditText) findViewById(R.id.inputEmail);
-        phone = (EditText) findViewById(R.id.inputPhone);
-        processBar = (ProgressBar)  findViewById(R.id.processBar);
+        btnsignup = findViewById(R.id.buttonSignUp);
+        firstname = findViewById(R.id.inputFirstName);
+        lastname = findViewById(R.id.inputLastName);
+        password = findViewById(R.id.inputPassword);
+        confirmpassword = findViewById(R.id.inputConfirmPassword);
+        email = findViewById(R.id.inputEmail);
+        phone = findViewById(R.id.inputPhone);
+        processBar = findViewById(R.id.processBar);
         btnsignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

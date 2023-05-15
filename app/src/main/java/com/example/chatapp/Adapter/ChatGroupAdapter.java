@@ -9,6 +9,7 @@ import static com.example.chatapp.Utils.CONSTS.TYPE_RECEIVED_VIDEO;
 import static com.example.chatapp.Utils.CONSTS.TYPE_SENT_FILE;
 import static com.example.chatapp.Utils.Utils.downloadFile;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,18 +27,15 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.chatapp.Dtos.PayloadAction;
 import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.Message.Message;
 import com.example.chatapp.R;
@@ -54,7 +52,7 @@ import java.util.concurrent.Executors;
 
 import okhttp3.ResponseBody;
 
-public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ChatGroupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Message> messageList;
     MediaMetadataRetriever retriever = new MediaMetadataRetriever();
     private boolean isLoading;
@@ -64,8 +62,8 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private OnLoadMoreListener onLoadMoreListener;
     private APIService apiService;
     private RetrofitClient retrofitClient;
+    private UserProfileDto currentUser;
 
-    // Define the listener interface
     public interface OnLoadMoreListener {
         void onLoadMore();
     }
@@ -77,17 +75,17 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final MessageClickListener messageClickListener;
 
+
     UserProfileDto contact;
     //... add other message types here
 
-    public ChatAdapter(RecyclerView recyclerView, Context context, List<Message> messageList, APIService apiService, RetrofitClient retrofitClient, MessageClickListener messageClickListener) {
+    public ChatGroupAdapter(RecyclerView recyclerView, Context context, List<Message> messageList, APIService apiService, RetrofitClient retrofitClient, MessageClickListener messageClickListener) {
         this.retrofitClient = retrofitClient;
         this.apiService = apiService;
         this.context = context;
         this.messageList = messageList;
-        this.contact = SharedPrefManager.getInstance(context).getUser();
         this.messageClickListener = messageClickListener;
-
+        currentUser = SharedPrefManager.getInstance(context).getUser();
 
         final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -114,10 +112,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         Message message = messageList.get(position);
-        String userId = SharedPrefManager.getInstance(context).getUser().getId();
         if (message.getUserId_send() == null)
             return -1;
-        if (message.getUserId_send().equals(userId)) {
+        if (message.getUserId_send().equals(currentUser.getId())) {
             switch (message.getType()) {
                 case CONSTS.MESSAGE_PRIVATE:
                 case CONSTS.MESSAGE_GROUP:
@@ -276,7 +273,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
         }
-
         public void bind(Message message) {
             textMessage.setText(message.getContent());
             textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
@@ -696,12 +692,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void bind(Message message) {
             this.message = message;
             textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
-//            audioIcon.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    messageClickListener.onAudioClicked(message.getContent(), audioDuration);
-//                }
-//            });
         }
     }
 
@@ -895,12 +885,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
             fileName.setText(message.getFile().getName());
-//            fileIcon.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    messageClickListener.onFileClicked(message.getContent(), message.getFile().getName());
-//                }
-//            });
         }
     }
 
@@ -954,6 +938,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
             itemView.setOnTouchListener(new View.OnTouchListener() {
+                @SuppressLint("ClickableViewAccessibility")
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     return gestureDetector.onTouchEvent(event);
@@ -970,12 +955,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             contact.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)
             ).into(imageProfile);
             ;
-//            fileIcon.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    messageClickListener.onFileClicked(message.getContent(), message.getFile().getName());
-//                }
-//            });
         }
     }
 
@@ -989,102 +968,26 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         MenuItem deleteItem = popupMenu.getMenu().findItem(R.id.delete);
         switch (type) {
             case 1:
+            case 3:
                 downloadItem.setVisible(false);
-                editItem.setVisible(true);
-                deleteItem.setVisible(true);
+                editItem.setVisible(false);
+                deleteItem.setVisible(false);
                 break;
             case 2:
                 downloadItem.setVisible(true);
                 editItem.setVisible(false);
-                deleteItem.setVisible(true);
-                break;
-            case 3:
-                downloadItem.setVisible(false);
-                editItem.setVisible(false);
-                deleteItem.setVisible(true);
+                deleteItem.setVisible(false);
                 break;
         }
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.download:
-                        downloadFile(context, messageList.get(position).getContent().replace("localhost:8080", "http://" + CONSTS.BASEURL), String.valueOf(UUID.randomUUID()));
-                        return true;
-                    case R.id.edit:
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setTitle("Edit Message");
-                        // Set up the input
-                        final EditText input = new EditText(context);
-                        // Specify the type of input expected
-                        input.setInputType(InputType.TYPE_CLASS_TEXT);
-                        input.setText(messageList.get(position).getContent());
-                        builder.setView(input);
-                        // Set up the buttons
-                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String newMessageText = input.getText().toString();
-                                PayloadAction payloadAction = new PayloadAction();
-                                payloadAction.setAction(CONSTS.EDIT_MESSAGE);
-                                payloadAction.setMsgId(messageList.get(position).getId());
-                                payloadAction.setMessageText(newMessageText);
-                                payloadAction.setReceiverId(contact.getId());
-                                apiService = retrofitClient.getRetrofit().create(APIService.class);
-                                apiService.sendAction(payloadAction).enqueue(new retrofit2.Callback<ResponseBody>() {
-                                    @Override
-                                    public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                                        if (response.isSuccessful()) {
-                                            messageList.get(position).setContent(newMessageText);
-                                            notifyItemChanged(position);
-                                        } else {
-                                            Toast.makeText(context, "fail send message", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
-                                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        });
-                        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-                        builder.show();
-                        return true;
-                    case R.id.delete:
-                        PayloadAction payloadAction = new PayloadAction();
-                        payloadAction.setAction(CONSTS.DELETE_MESSAGE);
-                        payloadAction.setMsgId(messageList.get(position).getId());
-                        payloadAction.setReceiverId(contact.getId());
-                        apiService = retrofitClient.getRetrofit().create(APIService.class);
-                        apiService.sendAction(payloadAction).enqueue(new retrofit2.Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                                if (response.isSuccessful()) {
-                                    messageList.remove(position);
-                                    notifyItemChanged(position);
-                                } else {
-                                    Toast.makeText(context, "fail send message", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
-                                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        // Delete message at position
-                        return true;
-                    default:
-                        return false;
+                if (item.getItemId() == R.id.download) {
+                    downloadFile(context, messageList.get(position).getContent().replace("localhost:8080", "http://" + CONSTS.BASEURL), String.valueOf(UUID.randomUUID()));
+                    return true;
                 }
+                return false;
             }
         });
         popupMenu.show();

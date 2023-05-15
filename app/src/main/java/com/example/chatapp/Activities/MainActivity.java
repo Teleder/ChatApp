@@ -1,56 +1,49 @@
 package com.example.chatapp.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.chatapp.Adapter.LastMessageAdapter;
-import com.example.chatapp.Adapter.WaitingAcceptContactAdapter;
-import com.example.chatapp.Dtos.SocketPayload;
 import com.example.chatapp.Dtos.UserOnlineOfflinePayload;
 import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.Model.User.Contact;
-import com.example.chatapp.Model.User.User;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Retrofit.TokenManager;
 import com.example.chatapp.Retrofit.WebSocketManager;
-import com.example.chatapp.Utils.CONSTS;
 import com.example.chatapp.Utils.MessageObserver;
 import com.example.chatapp.Utils.WebSocketService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements MessageObserver {
-    private RetrofitClient retrofitClient;
-    private boolean isWebSocketConnected = false;
-
-    private TokenManager tokenManager;
-    private Retrofit retrofit;
     SharedPrefManager sharedPrefManager;
     ImageView imageViewProfile;
     WebSocketManager webSocketManager;
     RecyclerView lastMessages;
     LastMessageAdapter lastMessageAdapter;
     List<Conservation> listConservations;
+    private RetrofitClient retrofitClient;
+    private boolean isWebSocketConnected = false;
+    private TokenManager tokenManager;
+    private Retrofit retrofit;
 
     @Override
     protected void onStart() {
@@ -84,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         retrofit = retrofitClient.getRetrofit();
         sharedPrefManager = new SharedPrefManager(getApplicationContext());
         UserProfileDto userProfileDto = sharedPrefManager.getUser();
-        lastMessages = (RecyclerView) findViewById(R.id.conversationRecyclerView);
+        lastMessages = findViewById(R.id.conversationRecyclerView);
         if (userProfileDto.getConservations().size() > 0) {
             lastMessages.setVisibility(View.VISIBLE);
             listConservations = userProfileDto.getConservations();
@@ -139,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
                 for (Contact con : sharedPrefManager.getUser().getList_contact()) {
                     if (socketPayload.getActive() != null && con.getUserId().equals(socketPayload.getId()) && socketPayload.getActive()) {
                         con.getUser().setActive(socketPayload.getActive().booleanValue());
+                        con.getUser().getLastActiveAt().setTime(new Date().getTime());
                         lastMessageAdapter.notifyDataSetChanged();
                     }
                 }

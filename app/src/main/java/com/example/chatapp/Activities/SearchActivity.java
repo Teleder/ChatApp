@@ -1,12 +1,12 @@
 package com.example.chatapp.Activities;
 
+import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.chatapp.Adapter.SearchAdapter;
 import com.example.chatapp.Dtos.UserBasicDto;
@@ -28,16 +28,17 @@ public class SearchActivity extends AppCompatActivity {
     SearchView searchView;
     SearchAdapter searchAdapter;
     List<UserBasicDto> arrayList;
+    SharedPrefManager sharedPrefManager;
+    APIService apiService;
     private RetrofitClient retrofitClient;
     private TokenManager tokenManager;
     private Retrofit retrofit;
-    SharedPrefManager sharedPrefManager;
-    APIService apiService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        rcListSearch  = findViewById(R.id.rcListSearch);
+        rcListSearch = findViewById(R.id.rcListSearch);
         searchView = findViewById(R.id.searchView);
         retrofitClient = RetrofitClient.getInstance(getApplicationContext());
         tokenManager = retrofitClient.getTokenManager();
@@ -57,8 +58,8 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
     }
-    private void filterListener(String text)
-    {
+
+    private void filterListener(String text) {
         apiService = retrofitClient.getRetrofit().create(APIService.class);
         apiService.SearchFriend(text).enqueue(new Callback<List<UserBasicDto>>() {
             @Override
