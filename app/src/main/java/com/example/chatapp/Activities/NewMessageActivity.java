@@ -29,7 +29,7 @@ public class NewMessageActivity extends AppCompatActivity {
         findViewById(R.id.imageBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivities(new Intent[]{new Intent(NewMessageActivity.this, MainActivity.class)});
+               finish();
             }
         });
 

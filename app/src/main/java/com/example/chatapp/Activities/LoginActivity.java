@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -115,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                         sharedPrefManager.clear();
                         tokenManager.saveTokens(response.body().getAccessToken(), response.body().getRefreshToken());
                         sharedPrefManager.saveUser(response.body().getUser());
+                        Log.d("Login", "onResponse: " + response.body().getUser().getDisplayName());
                         Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                         createNotificationChannel();
                         finish();

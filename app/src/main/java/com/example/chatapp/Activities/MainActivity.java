@@ -3,7 +3,6 @@ package com.example.chatapp.Activities;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -16,10 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.chatapp.Adapter.LastMessageAdapter;
 import com.example.chatapp.Dtos.PagedResultDto;
+import com.example.chatapp.Dtos.SocketPayload;
 import com.example.chatapp.Dtos.UserOnlineOfflinePayload;
 import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Inteface.ViewModelAPI;
 import com.example.chatapp.Model.Conservation.Conservation;
+import com.example.chatapp.Model.Message.Message;
 import com.example.chatapp.Model.User.Contact;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
@@ -27,6 +28,7 @@ import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Retrofit.TokenManager;
 import com.example.chatapp.Retrofit.WebSocketManager;
+import com.example.chatapp.Utils.CONSTS;
 import com.example.chatapp.Utils.MessageObserver;
 import com.example.chatapp.Utils.WebSocketService;
 import com.google.gson.Gson;
@@ -80,8 +82,10 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         retrofit = retrofitClient.getRetrofit();
         viewModel = new ViewModelProvider(this).get(ViewModelAPI.class);
         UserProfileDto userProfileDto = sharedPrefManager.getUser();
+
+
         viewModel.getConversationsLiveData().observe(this, conversations -> {
-            if (viewModel.getConversationsLiveData().getValue() == null){
+            if (viewModel.getConversationsLiveData().getValue() == null) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -102,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         });
         viewModel.getGroupsLiveData().observe(this, groups -> {
             if (!isWebSocketConnected) {
-                webSocketManager.disconnect();
                 webSocketManager.connect(userProfileDto.getId());
                 webSocketManager.subscribeToPrivateMessages(userProfileDto.getId());
                 for (String a : sharedPrefManager.getListGroupId()) {
@@ -165,29 +168,6 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
 
     }
 
-    @Override
-    public void onMessageReceived(String message) {
-        Gson gson = new Gson();
-        Type status = new TypeToken<UserOnlineOfflinePayload>() {
-        }.getType();
-        UserOnlineOfflinePayload socketPayload = gson.fromJson(message, status);
-        if (socketPayload == null)
-            return;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                for (Contact con : sharedPrefManager.getUser().getList_contact()) {
-                    if (socketPayload.getActive() != null && con.getUserId().equals(socketPayload.getId()) && socketPayload.getActive()) {
-                        con.getUser().setActive(socketPayload.getActive().booleanValue());
-                        con.getUser().getLastActiveAt().setTime(new Date().getTime());
-                        lastMessageAdapter.notifyDataSetChanged();
-                    }
-                }
-            }
-        });
-
-
-    }
 
     @Override
     public void onPause() {
@@ -231,6 +211,87 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
                 Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onMessageReceived(String message) {
+
+        Gson gson = new Gson();
+        Type socketPayloadType = new TypeToken<SocketPayload<Object>>() {
+        }.getType();
+        SocketPayload socketPayload;
+        try {
+            socketPayload = gson.fromJson(message, socketPayloadType);
+        }
+        catch (Exception e) {
+            gson = new Gson();
+            Type status = new TypeToken<UserOnlineOfflinePayload>() {
+            }.getType();
+            UserOnlineOfflinePayload payload = gson.fromJson(message, status);
+            if (payload == null)
+                return;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    for (Contact con : sharedPrefManager.getUser().getList_contact()) {
+                        if (payload.getActive() != null && con.getUserId().equals(payload.getId()) && payload.getActive()) {
+                            con.getUser().setActive(payload.getActive().booleanValue());
+                            con.getUser().getLastActiveAt().setTime(new Date().getTime());
+                            lastMessageAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            });
+            return;
+        }
+
+        if (socketPayload.getType() != null && socketPayload.getType().equals(CONSTS.NEW_GROUP)) {
+            gson = new Gson();
+            String json = gson.toJson(socketPayload.getData());
+            Conservation conservation = gson.fromJson(json, Conservation.class);
+            List<Conservation> cons = sharedPrefManager.getListConservation();
+            cons.add(0, conservation);
+            List<String> ids = sharedPrefManager.getListGroupId();
+            ids.add(conservation.getGroupId());
+            sharedPrefManager.saveListConservation(cons);
+            sharedPrefManager.saveListGroupId(ids);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    webSocketManager.subscribeToGroupMessages(conservation.getGroupId());
+                    lastMessageAdapter.notifyDataSetChanged();
+                }
+            });
+        } else if (socketPayload.getType().equals(CONSTS.MESSAGE_PRIVATE) || socketPayload.getType().equals(CONSTS.MESSAGE_GROUP)) {
+            List<Conservation> cons = sharedPrefManager.getListConservation();
+            gson = new Gson();
+            String json = gson.toJson(socketPayload.getData());
+            Message mess = gson.fromJson(json, Message.class);
+            int pos = 0;
+            for (Conservation con : cons) {
+                if (con.getCode().equals(mess.getCode())){
+                    con.setLastMessage(mess);
+                    break;
+                }
+                pos++;
+            }
+            Conservation conTmp = cons.get(pos);
+            cons.remove(pos);
+            cons.add(0, conTmp);
+            listConservations.remove(pos);
+            listConservations.add(0, conTmp);
+            sharedPrefManager.saveListConservation(cons);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    lastMessageAdapter.notifyDataSetChanged();
+                }
+            });
+        } else {
+
+        }
+
+
     }
 
 

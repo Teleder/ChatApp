@@ -105,7 +105,7 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
     private MediaRecorder recorder;
     private FrameLayout layoutAttach;
     private FrameLayout layoutAudio;
-    private EditText layoutEmoji;
+    private FrameLayout layoutEmoji;
     private FrameLayout layoutSend;
     private ImageView imageBack;
     private long totalMessage = 21;
@@ -155,10 +155,25 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         SocketPayload socketPayload = gson.fromJson(message, socketPayloadType);
         if (socketPayload == null || socketPayload.getType() == null)
             return;
-        if (socketPayload.getType().equals(CONSTS.MESSAGE_PRIVATE) || socketPayload.getType().equals(CONSTS.MESSAGE_GROUP)) {
+        if (socketPayload.getType().equals(CONSTS.MESSAGE_GROUP)) {
             gson = new Gson();
             String json = gson.toJson(socketPayload.getData());
             Message mess = gson.fromJson(json, Message.class);
+            if (mess.getUserId_send().equals(sharedPrefManager.getUser().getId())) {
+                return;
+            }
+            List<Conservation> cons = sharedPrefManager.getListConservation();
+            int pos = 0;
+            for (Conservation con : cons) {
+                if (con.getCode().equals(mess.getCode())){
+                    con.setLastMessage(mess);
+                    break;
+                }
+                pos++;
+            }
+            Conservation conTmp = cons.get(pos);
+            cons.remove(pos);
+            cons.add(0, conTmp);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -188,14 +203,16 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
                     }
                 }
             });
-        }
-        else if (socketPayload.getType() != null && socketPayload.getType().equals(CONSTS.NEW_GROUP)) {
-                gson = new Gson();
-                String json = gson.toJson(socketPayload.getData());
-                Conservation conservation = gson.fromJson(json, Conservation.class);
-                List<Conservation> cons = sharedPrefManager.getListConservation();
-                cons.add(0, conservation);
-                sharedPrefManager.saveListConservation(cons);
+        } else if (socketPayload.getType() != null && socketPayload.getType().equals(CONSTS.NEW_GROUP)) {
+            gson = new Gson();
+            String json = gson.toJson(socketPayload.getData());
+            Conservation conservation = gson.fromJson(json, Conservation.class);
+            List<Conservation> cons = sharedPrefManager.getListConservation();
+            cons.add(0, conservation);
+            List<String> ids = sharedPrefManager.getListGroupId();
+            ids.add(conservation.getGroupId());
+            sharedPrefManager.saveListConservation(cons);
+            sharedPrefManager.saveListGroupId(ids);
         }
 
     }
@@ -234,16 +251,16 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         txtStatus = findViewById(R.id.txt_member);
         ic_active = findViewById(R.id.ic_active);
         txtStatus.setText(sharedPrefManager.getCurrentConservation().getGroup().getMember().size() + " members");
-
+        getDetailGroup();
         EmojiManager.install(new GoogleEmojiProvider());
         layoutEmoji = findViewById(R.id.layoutEmoji);
         layoutEmoji.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendGroupMessage(sharedPrefManager.getCurrentConservation().getGroupId(),
-                        new PayloadMessage(layoutEmoji.getText().toString(), sharedPrefManager.getCurrentConservation().getCode(), CONSTS.MESSAGE_PRIVATE, null, sharedPrefManager.getCurrentConservation().getGroupId(), null));
+                openEmojiPanel();
             }
         });
+
 
 //        rcMessages.setHasFixedSize(true);
         chatAdapter = new ChatAdapter(rcMessages, this, messages, apiService, retrofitClient, new ChatAdapter.MessageClickListener() {
@@ -370,7 +387,7 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivities(new Intent[]{new Intent(ChatGroupActivity.this, MainActivity.class)});
+                finish();
             }
         });
     }
@@ -484,28 +501,13 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
 
     }
 
-    private void openEmojiPanel() {
-        try {
-            if (emojiPopup != null && emojiPopup.isShowing())
-                emojiPopup.dismiss();
-            else {
-                emojiPopup = EmojiPopup.Builder.fromRootView(findViewById(R.id.layoutAudioRecording)).build(inputMessage);
-                emojiPopup.toggle(); // Toggles visibility of the Popup.
-            }
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
-    }
-
     private void sendMessage() {
         String message = inputMessage.getText().toString();
         if (!message.isEmpty()) {
-            if (sharedPrefManager.getCurrentConservation().getGroupId() == null || sharedPrefManager.getCurrentConservation().getGroupId().trim().equals("")) {
-                sendGroupMessage(sharedPrefManager.getCurrentConservation().getGroupId(),
-                        new PayloadMessage(inputMessage.getText().toString(), sharedPrefManager.getCurrentConservation().getCode(), CONSTS.MESSAGE_PRIVATE, null, sharedPrefManager.getCurrentConservation().getGroupId(), null)
-                );
-                inputMessage.setText("");  // Clear the input field
-            }
+            sendGroupMessage(sharedPrefManager.getCurrentConservation().getGroupId(),
+                    new PayloadMessage(inputMessage.getText().toString(), sharedPrefManager.getCurrentConservation().getCode(), CONSTS.MESSAGE_PRIVATE, null, sharedPrefManager.getCurrentConservation().getGroupId(), null)
+            );
+            inputMessage.setText("");  // Clear the input field
 
         }
     }
@@ -649,7 +651,8 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         });
     }
 
-    public void sendGroupMessage(String groupId, PayloadMessage message) {
+    public void sendGroupMessage(String groupId, PayloadMessage message) {        apiService = retrofitClient.getRetrofit().create(APIService.class);
+
         apiService.sendGroupMessage(groupId, message).enqueue(new retrofit2.Callback<Message>() {
             @Override
             public void onResponse(retrofit2.Call<Message> call, retrofit2.Response<Message> response) {
@@ -675,7 +678,8 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         });
     }
 
-    public void getDetailGroup() {
+    public void getDetailGroup() {        apiService = retrofitClient.getRetrofit().create(APIService.class);
+
         apiService.getDetailGroup(sharedPrefManager.getCurrentConservation().getGroupId()).enqueue(new retrofit2.Callback<GroupDto>() {
             @Override
             public void onResponse(retrofit2.Call<GroupDto> call, retrofit2.Response<GroupDto> response) {
@@ -686,7 +690,7 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
                             @Override
                             public void run() {
                                 txtName.setText(response.body().getName());
-                                txtStatus.setText(response.body().getMember().size() + " members");
+                                txtStatus.setText(response.body().getMembers().size() + " members");
                                 Glide.with(ChatGroupActivity.this).load(response.body().getAvatarGroup()).into(imagePreview);
                             }
                         });
@@ -755,6 +759,19 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
             }
         }
         return CONSTS.FILE;
+    }
+
+    private void openEmojiPanel() {
+        try {
+            if (emojiPopup != null && emojiPopup.isShowing())
+                emojiPopup.dismiss();
+            else {
+                emojiPopup = EmojiPopup.Builder.fromRootView(findViewById(R.id.layoutAudioRecording)).build(inputMessage);
+                emojiPopup.toggle(); // Toggles visibility of the Popup.
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getRealPathFromURI(Context context, Uri contentUri) {

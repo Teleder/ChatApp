@@ -62,7 +62,6 @@ public CreateGroupActivity() {
             Uri selectedImage = data.getData();
             avatarPreview.setImageURI(selectedImage);
 
-
         }
     }
 

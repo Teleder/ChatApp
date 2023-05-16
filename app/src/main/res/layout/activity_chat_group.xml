@@ -85,8 +85,8 @@
 
     <TextView
         android:id="@+id/txt_member"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="157dp"
+        android:layout_height="21dp"
         android:layout_marginStart="@dimen/_8sdp"
         android:layout_marginEnd="@dimen/_8sdp"
         android:ellipsize="end"
@@ -96,6 +96,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/_12ssp"
         app:layout_constraintEnd_toStartOf="@id/imageInfo"
+        app:layout_constraintHorizontal_bias="0.773"
         app:layout_constraintStart_toEndOf="@id/imageBack"
         app:layout_constraintTop_toBottomOf="@id/txtName" />
 
@@ -229,7 +230,29 @@
             app:tint="@color/white" />
     </FrameLayout>
 
-    <!-- Layout for inputMessage -->
+    <!-- Layout for emoji -->
+    <FrameLayout
+        android:id="@+id/layoutEmoji"
+        android:layout_width="@dimen/_40sdp"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginLeft="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:background="@drawable/background_chat_input"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/layoutAudio">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/_4sdp"
+            android:layout_marginLeft="@dimen/_4sdp"
+            android:padding="@dimen/_8sdp"
+            android:src="@drawable/ic_emoji"
+            app:tint="@color/white" />
+    </FrameLayout>
+
+    <!-- ... -->
     <EditText
         android:id="@+id/inputMessage"
         android:layout_width="0dp"
@@ -249,25 +272,8 @@
         android:textColor="@color/white"
         android:textColorHint="@color/secondary_text"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/layoutEmoji"
-        app:layout_constraintStart_toEndOf="@id/layoutAudio" />
-
-    <EditText
-        android:id="@+id/layoutEmoji"
-        android:layout_width="@dimen/_50sdp"
-        android:layout_height="@dimen/_40sdp"
-        android:layout_marginStart="@dimen/_8sdp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/background_chat_input"
-        android:imeOptions="actionDone"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:paddingStart="@dimen/_16sdp"
-        android:paddingEnd="@dimen/_16sdp"
-        android:text="👍"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/inputMessage" />
+        app:layout_constraintEnd_toStartOf="@id/layoutSend"
+        app:layout_constraintStart_toEndOf="@id/layoutEmoji" />
 
     <FrameLayout
         android:id="@+id/layoutSend"

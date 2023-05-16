@@ -57,7 +57,7 @@ public class ViewModelAPI extends ViewModel {
     }
 
     public void fetchGroups() {
-        if (sharedPrefManager.getListGroupId() != null) {
+        if (sharedPrefManager.getListGroupId() != null ) {
             groupsLiveData.setValue(null);
             return;
         }

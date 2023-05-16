@@ -31,7 +31,7 @@ public class ContactActivity extends AppCompatActivity {
         findViewById(R.id.imageBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivities(new Intent[]{new Intent(ContactActivity.this, MainActivity.class)});
+                  finish();
             }
         });
         findViewById(R.id.imgSearch).setOnClickListener(new View.OnClickListener() {

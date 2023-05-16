@@ -215,8 +215,9 @@ public class CreateGroupFragment extends Fragment implements AddMemberDialog.OnM
                 if (response.isSuccessful()) {
                     try {
                         if (response.isSuccessful()) {
-                            Log.d("TAG", "onResponse: " + response.body().toString());
-                            startActivity(new Intent(getActivity(), MainActivity.class));
+                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                         }
                     } catch (RuntimeException e) {
                         e.printStackTrace();

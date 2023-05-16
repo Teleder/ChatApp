@@ -40,7 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
         findViewById(R.id.imageBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivities(new Intent[]{new Intent(ProfileActivity.this, MainActivity.class)});
+                finish();
             }
         });
         findViewById(R.id.tv_editprofile).setOnClickListener(new View.OnClickListener() {

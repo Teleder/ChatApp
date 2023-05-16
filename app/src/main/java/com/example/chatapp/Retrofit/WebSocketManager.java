@@ -39,9 +39,11 @@ public class WebSocketManager {
     private List<MessageObserver> observers = new ArrayList<>();
     private String iduser;
     private Context context;
+    private SharedPrefManager sharedPrefManager;
 
     @SuppressLint("CheckResult")
     private WebSocketManager(Context context) {
+        sharedPrefManager = SharedPrefManager.getInstance(context);
         this.context = context.getApplicationContext();
         String websocketUrl = "ws://" + BASEURL + "/websocket/websocket";
         stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, websocketUrl);
@@ -104,6 +106,10 @@ public class WebSocketManager {
         if (stompClient != null && !stompClient.isConnected()) {
             stompClient.disconnect();
             connect(this.iduser);
+           subscribeToPrivateMessages(sharedPrefManager.getUser().getId());
+            for (String a : sharedPrefManager.getListGroupId()) {
+                subscribeToGroupMessages(a);
+            }
         }
     }
 

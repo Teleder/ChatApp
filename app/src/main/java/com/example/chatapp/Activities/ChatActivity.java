@@ -168,10 +168,24 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
         SocketPayload socketPayload = gson.fromJson(message, socketPayloadType);
         if (socketPayload == null || socketPayload.getType() == null)
             return;
-        if (socketPayload.getType().equals(CONSTS.MESSAGE_PRIVATE) || socketPayload.getType().equals(CONSTS.MESSAGE_GROUP)) {
+        if (socketPayload.getType().equals(CONSTS.MESSAGE_PRIVATE)) {
+
             gson = new Gson();
             String json = gson.toJson(socketPayload.getData());
             Message mess = gson.fromJson(json, Message.class);
+            List<Conservation> cons = sharedPrefManager.getListConservation();
+            int pos = 0;
+            for (Conservation con : cons) {
+                if (con.getCode().equals(mess.getCode())){
+                    con.setLastMessage(mess);
+                    break;
+                }
+                pos++;
+            }
+            Conservation conTmp = cons.get(pos);
+            cons.remove(pos);
+            cons.add(0, conTmp);
+            sharedPrefManager.saveListConservation(cons);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -446,7 +460,7 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
         imageBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivities(new Intent[]{new Intent(ChatActivity.this, MainActivity.class)});
+                finish();
             }
         });
         findViewById(R.id.imageInfo).setOnClickListener(new View.OnClickListener() {
