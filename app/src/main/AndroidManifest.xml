@@ -29,10 +29,17 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.NewPassActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.CodeWhenResetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activities.ForgetPassActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.SettingChatFriendActivity"
-            android:exported="true" >
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".Activities.SearchActivity"
             android:exported="false" />

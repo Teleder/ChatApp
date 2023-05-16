@@ -66,6 +66,12 @@ public class LoginActivity extends AppCompatActivity {
                 startActivities(new Intent[]{new Intent(LoginActivity.this, SignUpActivity.class)});
             }
         });
+        findViewById(R.id.tvForgetPass).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivities(new Intent[]{new Intent(LoginActivity.this, ForgetPassActivity.class)});
+            }
+        });
     }
 
     private void login() {

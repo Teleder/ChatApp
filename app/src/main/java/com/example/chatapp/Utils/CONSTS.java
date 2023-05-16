@@ -2,7 +2,7 @@ package com.example.chatapp.Utils;
 
 public class CONSTS {
     public static final String MY_IMAGES= "images";
-    public final static String BASEURL = "192.168.1.33:8080";
+    public final static String BASEURL = "192.168.126.1:8080";
     public final static String MESSAGE_PRIVATE = "USER";
     public final static String MESSAGE_GROUP = "GROUP";
     public final static String READ_RECEIPT = "read";

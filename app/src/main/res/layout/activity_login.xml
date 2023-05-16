@@ -46,7 +46,7 @@
             android:layout_marginTop="@dimen/_40sdp"
             android:background="@drawable/background_input"
             android:hint="@string/Email"
-            android:text="test1@gmail.com"
+            android:text="stringtest@gmail.com"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="textEmailAddress"
@@ -61,7 +61,7 @@
             android:layout_marginTop="@dimen/_16sdp"
             android:background="@drawable/background_input"
             android:hint="@string/password"
-            android:text="m0H(6+Y)"
+            android:text="nf;@'t)Z #3Ua"
             android:imeOptions="actionDone"
             android:importantForAutofill="no"
             android:inputType="textPassword"
@@ -69,6 +69,18 @@
             android:paddingEnd="@dimen/_16sdp"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/_13ssp"/>
+
+        <TextView
+            android:id="@+id/tvForgetPass"
+            android:layout_width="339dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:gravity="right"
+            android:text="Forget Password?"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/_13ssp"
+            android:textStyle="italic" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSignIn"
             android:layout_width="match_parent"
@@ -79,8 +91,6 @@
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold"
             app:cornerRadius="@dimen/_8sdp"/>
-
-
 
         <TextView
             android:id="@+id/textCreateNewAccount"
