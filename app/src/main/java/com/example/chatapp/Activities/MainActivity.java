@@ -158,14 +158,8 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
             }
         });
         imageViewProfile = findViewById(R.id.imageProfile);
-        if (userProfileDto.getAvatar() == null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Glide.with(getApplicationContext()).load(getApplicationContext().getDrawable(R.drawable.user)).into(imageViewProfile);
-            } else {
-                Glide.with(getApplicationContext()).load(userProfileDto.getAvatar()).into(imageViewProfile);
-            }
-
-
+        if (userProfileDto.getAvatar() != null)
+            Glide.with(getApplicationContext()).load(userProfileDto.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(imageViewProfile);
     }
 
 

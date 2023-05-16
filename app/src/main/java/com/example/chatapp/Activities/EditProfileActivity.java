@@ -32,6 +32,7 @@ import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Retrofit.TokenManager;
+import com.example.chatapp.Utils.CONSTS;
 import com.example.chatapp.Utils.RealPathUtil;
 
 import java.io.IOException;
@@ -83,7 +84,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                             editImage.setImageBitmap(bitmap);
 //                            Toast.makeText(getApplicationContext(),"set tai day",Toast.LENGTH_SHORT).show();
-                            uploadFile(RealPathUtil.getRealPath(getApplicationContext(), mUri),userProfileDto.getId().toString());
+                            uploadFile(RealPathUtil.getRealPath(getApplicationContext(), mUri), userProfileDto.getId().toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -174,7 +175,11 @@ public class EditProfileActivity extends AppCompatActivity {
                         userProfileDto.setLastName(response.body().getLastName());
                         userProfileDto.setBio(response.body().getBio());
                         userProfileDto.setDisplayName(response.body().getFirstName() + " " + response.body().getLastName());
-                        userProfileDto.setAvatar(response.body().getAvatar());
+
+                        com.example.chatapp.Model.File.File avatar = response.body().getAvatar();
+                        avatar.setCreateAt(null);
+                        avatar.setUpdateAt(null);
+                        userProfileDto.setAvatar(avatar);
                         Toast.makeText(getApplicationContext(), "upload", Toast.LENGTH_SHORT).show();
                         finish();
                         Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
@@ -194,6 +199,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
     }
+
     public void uploadFile(String filePath, String code) {
         File file = new File(filePath);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), file);
@@ -207,7 +213,9 @@ public class EditProfileActivity extends AppCompatActivity {
                         avatarFile = response.body();
                         User user = new User(userProfileDto.getId(), userProfileDto.getFirstName(), userProfileDto.getLastName(), userProfileDto.getPhone(), userProfileDto.getEmail(), userProfileDto.getBio(), "");
                         avatarFile.setUser_own(user);
-                        Toast.makeText(EditProfileActivity.this,"success", Toast.LENGTH_SHORT).show();
+                        avatarFile.setCreateAt(null);
+                        avatarFile.setUpdateAt(null);
+                        Toast.makeText(EditProfileActivity.this, "success", Toast.LENGTH_SHORT).show();
                     } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
@@ -235,12 +243,9 @@ public class EditProfileActivity extends AppCompatActivity {
         editFirstName.setText(userProfileDto.getFirstName());
         editLastName.setText(userProfileDto.getLastName());
         editEmail.setText(userProfileDto.getEmail());
-        if (userProfileDto.getAvatar() == null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Glide.with(getApplicationContext()).load(getApplicationContext().getDrawable(R.drawable.user)).into(editImage);
-            } else {
-                Glide.with(getApplicationContext()).load(userProfileDto.getAvatar()).into(editImage);
-            }
+        if (userProfileDto.getAvatar() != null) {
+            Glide.with(getApplicationContext()).load(userProfileDto.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(editImage);
+        }
     }
 
     private void CheckPermission() {
