@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.example.chatapp.Dtos.GroupDto;
 import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.Model.User.User;
@@ -24,6 +25,7 @@ public class SharedPrefManager {
     private static final String KEY_BIO = "keybio";
     private static final String CURRENT_USER = "currentuser";
     private static final String CURRENT_CONSERVATION = "CURRENT_CONSERVATION";
+    private static final String CURRENT_GROUP = "CURRENT_GROUP";
     private static SharedPrefManager mInstance;
     private static Context ctx;
     private Gson gson;
@@ -86,8 +88,19 @@ public class SharedPrefManager {
         editor.apply();
     }
 
-
-
+    public void saveCurrentGroup(GroupDto groupDto) {
+        String userJson = gson.toJson(groupDto);
+        editor.putString(CURRENT_GROUP, userJson);
+        editor.apply();
+    }
+    public GroupDto getCurrentGroup() {
+        String groupDto = sharedPreferences.getString(CURRENT_GROUP, null);
+        if (groupDto != null) {
+            Type type = new TypeToken<GroupDto>() {}.getType();
+            return gson.fromJson(groupDto, type);
+        }
+        return null;
+    }
     public void clearUser() {
         editor.remove(CURRENT_USER).apply();
     }

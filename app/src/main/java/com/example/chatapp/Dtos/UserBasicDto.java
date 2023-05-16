@@ -1,11 +1,11 @@
 package com.example.chatapp.Dtos;
 
 import com.example.chatapp.Model.File.File;
-import com.google.type.DateTime;
+import java.util.Date;
 
 public class UserBasicDto {
-    public DateTime createAt;
-    public DateTime updateAt;
+    public Date createAt;
+    public Date updateAt;
     private String id;
     private String firstName;
     private String displayName;
@@ -13,8 +13,27 @@ public class UserBasicDto {
     private String phone;
     private String bio;
     private File avatar;
+    public boolean isActive ;
+    Date lastActiveAt;
 
-    public UserBasicDto(DateTime createAt, DateTime updateAt, String id, String firstName, String displayName, String lastName, String phone, String bio, File avatar) {
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public Date getLastActiveAt() {
+        return lastActiveAt;
+    }
+
+    public void setLastActiveAt(Date lastActiveAt) {
+        this.lastActiveAt = lastActiveAt;
+    }
+
+
+    public UserBasicDto(Date createAt, Date updateAt, String id, String firstName, String displayName, String lastName, String phone, String bio, File avatar) {
         this.createAt = createAt;
         this.updateAt = updateAt;
         this.id = id;
@@ -26,19 +45,19 @@ public class UserBasicDto {
         this.avatar = avatar;
     }
 
-    public DateTime getCreateAt() {
+    public Date getCreateAt() {
         return createAt;
     }
 
-    public void setCreateAt(DateTime createAt) {
+    public void setCreateAt(Date createAt) {
         this.createAt = createAt;
     }
 
-    public DateTime getUpdateAt() {
+    public Date getUpdateAt() {
         return updateAt;
     }
 
-    public void setUpdateAt(DateTime updateAt) {
+    public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
     }
 

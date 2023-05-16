@@ -67,6 +67,10 @@
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".Activities.CreateGroupActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".Activities.LoginActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">

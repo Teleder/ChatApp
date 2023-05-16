@@ -1,5 +1,6 @@
 package com.example.chatapp.Model.Group;
 
+import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.Model.User.User;
 
 import java.util.Date;
@@ -8,10 +9,10 @@ public class Member {
     Role role;
     Status status;
     private String userId;
-    private Date createAt = new Date();
-    private Date updateAt = new Date();
+    private Date createAt;
+    private Date updateAt;
     private String addedByUserId;
-    private   User user;
+    private UserBasicDto user;
 
     public Role getRole() {
         return role;
@@ -61,11 +62,11 @@ public class Member {
         this.addedByUserId = addedByUserId;
     }
 
-    public User getUser() {
+    public UserBasicDto getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserBasicDto user) {
         this.user = user;
     }
 
@@ -74,11 +75,13 @@ public class Member {
         this.addedByUserId = addedByUserId;
         this.status = status;
     }
-    public Member(User user, String addedByUserId, Status status) {
+
+    public Member(UserBasicDto user, String addedByUserId, Status status) {
         this.user = user;
         this.addedByUserId = addedByUserId;
         this.status = status;
     }
+
     public enum Status {
         ACCEPT,
         WAITING,

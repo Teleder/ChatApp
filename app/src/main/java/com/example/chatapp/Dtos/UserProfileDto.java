@@ -21,12 +21,13 @@ public class UserProfileDto {
     private File QR;
     private String displayName;
     private List<Block> blocks = new ArrayList<>();
-    private List<Conservation> conservations = new ArrayList<>();
+    private List<String>conservations;
     private User.Role role;
     private List<Contact> list_contact = new ArrayList<>();
     private Date lastActiveAt;
 
-    public UserProfileDto(String id, String firstName, String lastName, String phone, String email, String bio, File avatar, File QR, String displayName, List<Block> blocks, List<Conservation> conservations, User.Role role, List<Contact> list_contact, Date lastActiveAt) {
+    public UserProfileDto(String id, String firstName, String lastName, String phone, String email, String bio, File avatar, File QR, String displayName, List<Block> blocks,
+                          List<String> conservations, User.Role role, List<Contact> list_contact, Date lastActiveAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -139,11 +140,11 @@ public class UserProfileDto {
         this.blocks = blocks;
     }
 
-    public List<Conservation> getConservations() {
+    public List<String> getConservations() {
         return conservations;
     }
 
-    public void setConservations(List<Conservation> conservations) {
+    public void setConservations(List<String> conservations) {
         this.conservations = conservations;
     }
 

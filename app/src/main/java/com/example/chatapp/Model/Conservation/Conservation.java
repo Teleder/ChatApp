@@ -1,5 +1,6 @@
 package com.example.chatapp.Model.Conservation;
 
+import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.Model.BaseModel;
 import com.example.chatapp.Model.Group.Group;
 import com.example.chatapp.Model.Message.Message;
@@ -48,8 +49,8 @@ public class Conservation extends BaseModel {
     private String userId_1;
     private String userId_2;
     private String groupId;
-    private User user_1;
-    private User user_2;
+    private UserBasicDto user_1;
+    private UserBasicDto user_2;
     private Group group;
 
     public Group getGroup() {
@@ -64,19 +65,29 @@ public class Conservation extends BaseModel {
         return type;
     }
 
-    public User getUser_1() {
+    public UserBasicDto getUser_1() {
         return user_1;
     }
 
-    public void setUser_1(User user_1) {
+    public String getCurrentEmotion() {
+        return currentEmotion;
+    }
+
+    public void setCurrentEmotion(String currentEmotion) {
+        this.currentEmotion = currentEmotion;
+    }
+
+    private String currentEmotion = "\uD83D\uDC4D";
+
+    public void setUser_1(UserBasicDto user_1) {
         this.user_1 = user_1;
     }
 
-    public User getUser_2() {
+    public UserBasicDto getUser_2() {
         return user_2;
     }
 
-    public void setUser_2(User user_2) {
+    public void setUser_2(UserBasicDto user_2) {
         this.user_2 = user_2;
     }
 

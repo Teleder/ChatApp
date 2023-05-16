@@ -47,6 +47,7 @@ import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Utils.CONSTS;
 import com.makeramen.roundedimageview.RoundedImageView;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -405,6 +406,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             imageProfile = itemView.findViewById(R.id.imageProfile);
             imageMessage = itemView.findViewById(R.id.imageMessage);
             textDateTime = itemView.findViewById(R.id.textDateTime);
+
             gestureDetector = new GestureDetector(itemView.getContext(), new GestureDetector.OnGestureListener() {
                 @Override
                 public boolean onDown(MotionEvent e) {
@@ -451,9 +453,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public void bind(Message message) {
             this.message = message;
-            // Load profile image from message into imageProfile
-            // Load image from message into imageMessage
-            textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt()));
+            textDateTime.setText(DateFormat.format("dd-MM-yyyy (HH:mm:ss)", message.getCreateAt() != null ? message.getCreateAt() : new Date()));
             Glide.with(context).load(message.getContent().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(imageMessage);
             Glide.with(context).load(
                     contact.getAvatar() == null ? R.drawable.ic_people_24 :

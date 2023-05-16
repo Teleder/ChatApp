@@ -40,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.chatapp.Adapter.ChatAdapter;
 import com.example.chatapp.Dialog.VideoPreviewDialog;
+import com.example.chatapp.Dtos.GroupDto;
 import com.example.chatapp.Dtos.PagedResultDto;
 import com.example.chatapp.Dtos.PayloadAction;
 import com.example.chatapp.Dtos.PayloadMessage;
@@ -281,8 +282,6 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         txtName = findViewById(R.id.txtName);
         txtStatus = findViewById(R.id.txt_member);
         ic_active = findViewById(R.id.ic_active);
-        txtName.setText((sharedPrefManager.getCurrentConservation().getUserId_1().
-                equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).getDisplayName());
         if ((sharedPrefManager.getCurrentConservation().getUserId_1().
                 equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).isActive()) {
             //Active X minutes ago
@@ -728,6 +727,36 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
 
             @Override
             public void onFailure(retrofit2.Call<Message> call, Throwable t) {
+                Toast.makeText(ChatGroupActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getDetailGroup() {
+        apiService.getDetailGroup(sharedPrefManager.getCurrentConservation().getGroupId()).enqueue(new retrofit2.Callback<GroupDto>() {
+            @Override
+            public void onResponse(retrofit2.Call<GroupDto> call, retrofit2.Response<GroupDto> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        sharedPrefManager.saveCurrentGroup(response.body());
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                txtName.setText(response.body().getName());
+                                txtStatus.setText(response.body().getMember().size() + " members");
+                                Glide.with(ChatGroupActivity.this).load(response.body().getAvatarGroup()).into(imagePreview);
+                            }
+                        });
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(ChatGroupActivity.this, "fail send message", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<GroupDto> call, Throwable t) {
                 Toast.makeText(ChatGroupActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

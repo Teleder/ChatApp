@@ -681,6 +681,7 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
 
 
     public void sendAction(PayloadAction action) {
+        apiService = retrofitClient.getRetrofit().create(APIService.class);
         apiService.sendAction(action).enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override
             public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
@@ -731,6 +732,8 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
     }
 
     public void sendPrivateMessage(String recipientId, PayloadMessage message) {
+        apiService = retrofitClient.getRetrofit().create(APIService.class);
+
         apiService.sendPrivateMessage(recipientId, message).enqueue(new retrofit2.Callback<Message>() {
             @Override
             public void onResponse(retrofit2.Call<Message> call, retrofit2.Response<Message> response) {
@@ -757,7 +760,6 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
     }
 
     public void playAudio(String audioUrl, TextView audioDuration) {
-        Log.d("audioUrl", audioUrl);
         final MediaPlayer mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(audioUrl);
