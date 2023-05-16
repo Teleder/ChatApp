@@ -82,6 +82,11 @@ public class Member {
         this.status = status;
     }
 
+    public Member(String userId) {
+        this.userId = userId;
+    }
+
+
     public enum Status {
         ACCEPT,
         WAITING,

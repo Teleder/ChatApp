@@ -49,22 +49,22 @@ public class WaitingAcceptContactAdapter extends RecyclerView.Adapter<WaitingAcc
     @Override
     public void onBindViewHolder(ContactHolder holder, int position) {
         Contact contactModel = arrList.get(position);
-//        if (contactModel.getUser().getAvatar() != null)
-//            Glide.with(context).load(contactModel.getUser().getAvatar()).into(holder.avatar);
-//        holder.tvDisplayName.setText(contactModel.getUser().getDisplayName());
-//        holder.tvBio.setText(contactModel.getUser().getBio());
-//        holder.userId.setText(contactModel.getUser().getId());
+        if (contactModel.getUser().getAvatar() != null)
+            Glide.with(context).load(contactModel.getUser().getAvatar()).into(holder.avatar);
+        holder.tvDisplayName.setText(contactModel.getUser().getDisplayName());
+        holder.tvBio.setText(contactModel.getUser().getBio());
+        holder.userId.setText(contactModel.getUser().getId());
         holder.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CancelAcceptContact(holder.userId.getText().toString());
+                CancelAcceptContact(holder.userId.getText().toString(), holder);
 //                Toast.makeText(context, "cancel", Toast.LENGTH_SHORT).show();
             }
         });
         holder.btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AcceptContact(holder.userId.getText().toString());
+                AcceptContact(holder.userId.getText().toString(), holder);
 //                Toast.makeText(context, "accept", Toast.LENGTH_SHORT).show();
             }
         });
@@ -98,7 +98,7 @@ public class WaitingAcceptContactAdapter extends RecyclerView.Adapter<WaitingAcc
         this.arrList = contactModelList;
         notifyDataSetChanged();
     }
-    private void CancelAcceptContact(String contactId)
+    private void CancelAcceptContact(String contactId, ContactHolder holder)
     {
         apiService = retrofit.create(APIService.class);
         apiService.AcceptContact(contactId, false).enqueue(new Callback<Boolean>() {
@@ -106,9 +106,9 @@ public class WaitingAcceptContactAdapter extends RecyclerView.Adapter<WaitingAcc
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
                     try {
-
-                        Toast.makeText(context, "Cancel success", Toast.LENGTH_SHORT).show();
-//                        finish();
+                        holder.btnCancel.setVisibility(View.GONE);
+                        holder.btnAccept.setVisibility(View.VISIBLE);
+                        holder.btnAccept.setText("Đã hủy yêu cầu");
                     } catch (RuntimeException e) {
                         e.printStackTrace();
                     }
@@ -123,7 +123,7 @@ public class WaitingAcceptContactAdapter extends RecyclerView.Adapter<WaitingAcc
             }
         });
     }
-    private void AcceptContact(String contactId)
+    private void AcceptContact(String contactId, ContactHolder holder)
     {
         apiService = retrofit.create(APIService.class);
         apiService.AcceptContact(contactId, true).enqueue(new Callback<Boolean>() {
@@ -131,7 +131,10 @@ public class WaitingAcceptContactAdapter extends RecyclerView.Adapter<WaitingAcc
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.isSuccessful()) {
                     try {
-                        Toast.makeText(context, "accept success", Toast.LENGTH_SHORT).show();
+                        holder.btnCancel.setVisibility(View.GONE);
+                        holder.btnAccept.setVisibility(View.VISIBLE);
+                        holder.btnAccept.setText("Bạn bè");
+//                        Toast.makeText(context, "accept success", Toast.LENGTH_SHORT).show();
 //                        finish();
                     } catch (RuntimeException e) {
                         e.printStackTrace();

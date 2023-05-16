@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateGroupActivity extends AppCompatActivity implements AddMemberDialog.OnMembersSelectedListener {
-
+public CreateGroupActivity() {
+        super();
+    }
     private EditText groupNameEditText;
     private Switch groupPublicSwitch;
     private RoundedImageView avatarPreview;

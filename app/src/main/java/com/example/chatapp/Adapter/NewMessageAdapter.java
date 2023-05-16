@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import com.example.chatapp.Activities.CreateGroupActivity;
 import com.example.chatapp.Activities.ListContactActivity;
 import com.example.chatapp.Activities.ListFriendActivity;
 import com.example.chatapp.Activities.ListGroupActivity;
 import com.example.chatapp.Activities.WaitingAcceptContactActivity;
+import com.example.chatapp.Dialog.CreateGroupFragment;
 
 public class NewMessageAdapter extends FragmentStatePagerAdapter {
     public NewMessageAdapter(@NonNull FragmentManager fm, int behavior) {
@@ -20,10 +22,8 @@ public class NewMessageAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position){
-            case 0:
-                return new ListFriendActivity();
             case 1:
-                return new ListGroupActivity();
+                return new CreateGroupFragment();
             default:
                 return new ListFriendActivity();
         }

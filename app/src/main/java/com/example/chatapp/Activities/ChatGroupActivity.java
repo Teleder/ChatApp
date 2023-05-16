@@ -45,6 +45,7 @@ import com.example.chatapp.Dtos.PagedResultDto;
 import com.example.chatapp.Dtos.PayloadAction;
 import com.example.chatapp.Dtos.PayloadMessage;
 import com.example.chatapp.Dtos.SocketPayload;
+import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.Model.Message.Message;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
@@ -166,54 +167,11 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
                     rcMessages.scrollToPosition(chatAdapter.getItemCount() - 1);
                 }
             });
-        } else if (socketPayload.getType() != null && socketPayload.getType().equals(CONSTS.EDIT_MESSAGE)) {
-            gson = new Gson();
-            String json = gson.toJson(socketPayload.getData());
-            Message mess = gson.fromJson(json, Message.class);
-            for (Message mes : messages) {
-                if (mess.getId().equals(mes.getId())) {
-                    mes = mess;
-                    break;
-                }
-            }
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    chatAdapter.notifyDataSetChanged();
-                }
-            });
-        } else if (socketPayload.getType() != null && socketPayload.getType().equals(CONSTS.CHATTING)) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    (sharedPrefManager.getCurrentConservation().getUserId_1().
-                            equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).setActive(true);
-                    txtStatus.setText("Active now");
-                    ic_active.setVisibility(View.VISIBLE);
-                    txtStatus.setText("Typing...");
-                }
-            });
-
-        } else if (socketPayload.getType() != null && socketPayload.getType().equals(CONSTS.STOP_CHATTING)) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if ((sharedPrefManager.getCurrentConservation().getUserId_1().
-                            equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).isActive()) {
-                        txtStatus.setText("Active now");
-                        ic_active.setVisibility(View.VISIBLE);
-                    } else {
-                        txtStatus.setText("Active " + getElapsedTime((sharedPrefManager.getCurrentConservation().getUserId_1().
-                                equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).getLastActiveAt()) + " ago");
-                        ic_active.setVisibility(View.GONE);
-                    }
-                }
-            });
-
         } else if (socketPayload.getType() != null && socketPayload.getType().equals(CONSTS.DELETE_MESSAGE)) {
             gson = new Gson();
             String json = gson.toJson(socketPayload.getData());
             PayloadAction mess = gson.fromJson(json, PayloadAction.class);
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -230,23 +188,16 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
                     }
                 }
             });
-        } else if (socketPayload.getType() != null && socketPayload.getType().equals(CONSTS.EDIT_MESSAGE)) {
-            gson = new Gson();
-            String json = gson.toJson(socketPayload.getData());
-            PayloadAction mess = gson.fromJson(json, PayloadAction.class);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    for (Message message : messages) {
-                        if (message.getId().equals(mess.getMsgId())) {
-                            message.setContent(mess.getMessageText());
-                            chatAdapter.notifyDataSetChanged();
-                            break;
-                        }
-                    }
-                }
-            });
         }
+        else if (socketPayload.getType() != null && socketPayload.getType().equals(CONSTS.NEW_GROUP)) {
+                gson = new Gson();
+                String json = gson.toJson(socketPayload.getData());
+                Conservation conservation = gson.fromJson(json, Conservation.class);
+                List<Conservation> cons = sharedPrefManager.getListConservation();
+                cons.add(0, conservation);
+                sharedPrefManager.saveListConservation(cons);
+        }
+
     }
 
     @Override
@@ -282,16 +233,8 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         txtName = findViewById(R.id.txtName);
         txtStatus = findViewById(R.id.txt_member);
         ic_active = findViewById(R.id.ic_active);
-        if ((sharedPrefManager.getCurrentConservation().getUserId_1().
-                equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).isActive()) {
-            //Active X minutes ago
-            txtStatus.setText("Active now");
-            ic_active.setVisibility(View.VISIBLE);
-        } else {
-            txtStatus.setText("Active " + getElapsedTime((sharedPrefManager.getCurrentConservation().getUserId_1().
-                    equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).getLastActiveAt()) + " ago");
-            ic_active.setVisibility(View.GONE);
-        }
+        txtStatus.setText(sharedPrefManager.getCurrentConservation().getGroup().getMember().size() + " members");
+
         EmojiManager.install(new GoogleEmojiProvider());
         layoutEmoji = findViewById(R.id.layoutEmoji);
         layoutEmoji.setOnClickListener(new View.OnClickListener() {
@@ -349,7 +292,7 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
 
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
-                if (layoutManager != null && !processBar.isShown()) {
+                if (layoutManager != null && processBar != null && !processBar.isShown()) {
                     int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
                     // Load more condition
                     if (firstVisibleItemPosition == 0) {

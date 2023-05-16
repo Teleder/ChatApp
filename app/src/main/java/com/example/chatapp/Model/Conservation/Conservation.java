@@ -1,5 +1,6 @@
 package com.example.chatapp.Model.Conservation;
 
+import com.example.chatapp.Dtos.GroupDto;
 import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.Model.BaseModel;
 import com.example.chatapp.Model.Group.Group;
@@ -51,13 +52,13 @@ public class Conservation extends BaseModel {
     private String groupId;
     private UserBasicDto user_1;
     private UserBasicDto user_2;
-    private Group group;
+    private GroupDto group;
 
-    public Group getGroup() {
+    public GroupDto getGroup() {
         return group;
     }
 
-    public void setGroup(Group group) {
+    public void setGroup(GroupDto group) {
         this.group = group;
     }
 

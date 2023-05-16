@@ -449,6 +449,12 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
                 startActivities(new Intent[]{new Intent(ChatActivity.this, MainActivity.class)});
             }
         });
+        findViewById(R.id.imageInfo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivities(new Intent[]{new Intent(ChatActivity.this, SettingChatFriendActivity.class)});
+            }
+        });
     }
 
     private void startAudioRecording() {

@@ -13,15 +13,24 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.chatapp.Dtos.LoginDto;
 import com.example.chatapp.Dtos.LoginInputDto;
+import com.example.chatapp.Dtos.PagedResultDto;
+import com.example.chatapp.Dtos.UserProfileDto;
+import com.example.chatapp.Inteface.OnApiCallsCompletedListener;
+import com.example.chatapp.Model.Conservation.Conservation;
+import com.example.chatapp.Model.Group.Group;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Retrofit.TokenManager;
 import com.example.chatapp.Retrofit.WebSocketManager;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,7 +49,16 @@ public class LoginActivity extends AppCompatActivity {
     private TokenManager tokenManager;
     private Retrofit retrofit;
     private final boolean isWebSocketConnected = false;
+    MutableLiveData<List<Conservation>> conversationsLiveData = new MutableLiveData<>();
+    MutableLiveData<List<String>> groupsLiveData = new MutableLiveData<>();
 
+    public LiveData<List<Conservation>> getConversationsLiveData() {
+        return conversationsLiveData;
+    }
+
+    public LiveData<List<String>> getGroupsLiveData() {
+        return groupsLiveData;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +84,12 @@ public class LoginActivity extends AppCompatActivity {
                 startActivities(new Intent[]{new Intent(LoginActivity.this, SignUpActivity.class)});
             }
         });
+        findViewById(R.id.tvForgetPass).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivities(new Intent[]{new Intent(LoginActivity.this, ForgetPassActivity.class)});
+            }
+        });
     }
 
     private void login() {
@@ -88,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
                 processBar.setVisibility(View.VISIBLE);
                 if (response.isSuccessful()) {
                     try {
+                        sharedPrefManager.clear();
                         tokenManager.saveTokens(response.body().getAccessToken(), response.body().getRefreshToken());
                         sharedPrefManager.saveUser(response.body().getUser());
                         Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
@@ -120,5 +145,52 @@ public class LoginActivity extends AppCompatActivity {
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+    public void fetchGroup() {
+        apiService.getAllIdConservationGroup().enqueue(new retrofit2.Callback<List<String>>() {
+            @Override
+            public void onResponse(retrofit2.Call<List<String>> call, retrofit2.Response<List<String>> response) {
+                if (response.isSuccessful()) {
+                    try {
+                       sharedPrefManager.saveListGroupId(response.body());
+                        groupsLiveData.setValue(response.body());
+
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "fail send message", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<List<String>> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    public void fetchConservation() {
+//        apiService = retrofitClient.getRetrofit().create(APIService.class);
+        apiService.getMyConversations(0, 100).enqueue(new retrofit2.Callback<PagedResultDto<Conservation>>() {
+            @Override
+            public void onResponse(retrofit2.Call<PagedResultDto<Conservation>> call, retrofit2.Response<PagedResultDto<Conservation>> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        conversationsLiveData.setValue(response.body().getData());
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, "fail send message", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<PagedResultDto<Conservation>> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

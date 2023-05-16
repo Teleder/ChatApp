@@ -94,22 +94,15 @@ public interface APIService {
     @POST("messages/groupMessage/{groupId}")
     Call<Message> sendGroupMessage(@Path("groupId") String groupId, @Body PayloadMessage message);
 
-
-
-
     // Conservation
     @GET("conservations/get-my-conversations")
     Call<PagedResultDto<Conservation>> getMyConversations(@Query("page") int page, @Query("size") int size);
     @GET("conservations/get-my-conversations-group")
     Call<List<String>> getAllIdConservationGroup();
 
-
-
-
     //Group
     @GET("groups/{id}")
     Call<GroupDto> getDetailGroup(@Path("id") String groupId);
-
     @POST("groups/{groupId}/create-role")
     Call<Group> createRoleForGroup(@Path("groupId") String groupId, @Body RoleDto roleRequest);
     @DELETE("groups/{groupId}/delete-role")

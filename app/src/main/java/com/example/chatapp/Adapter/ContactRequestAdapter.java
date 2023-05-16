@@ -1,5 +1,6 @@
 package com.example.chatapp.Adapter;
 
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,12 +57,13 @@ public class ContactRequestAdapter extends RecyclerView.Adapter<ContactRequestAd
             contactName = itemView.findViewById(R.id.contact_name);
             checkBox = itemView.findViewById(R.id.checkbox);
             contactAvatar = itemView.findViewById(R.id.contact_avatar);
-
+            checkBox.setClickable(false);
             itemView.setOnClickListener(v -> {
                 if (selectedItems.get(getAdapterPosition(), false)) {
                     selectedItems.delete(getAdapterPosition());
                     checkBox.setChecked(false);
                 } else {
+                    Log.d("ContactRequestAdapter", "onClick: " + getAdapterPosition());
                     selectedItems.put(getAdapterPosition(), true);
                     checkBox.setChecked(true);
                 }
@@ -69,11 +71,11 @@ public class ContactRequestAdapter extends RecyclerView.Adapter<ContactRequestAd
         }
     }
 
-    public List<UserBasicDto> getSelectedContacts() {
-        List<UserBasicDto> selectedContacts = new ArrayList<>();
-        for (int i = 0; i < selectedItems.size(); i++) {
-            selectedContacts.add(contacts.get(selectedItems.keyAt(i)));
+        public List<UserBasicDto> getSelectedContacts() {
+            List<UserBasicDto> selectedContacts = new ArrayList<>();
+            for (int i = 0; i < selectedItems.size(); i++) {
+                selectedContacts.add(contacts.get(selectedItems.keyAt(i)));
+            }
+            return selectedContacts;
         }
-        return selectedContacts;
-    }
 }

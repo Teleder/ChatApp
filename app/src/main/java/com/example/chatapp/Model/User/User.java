@@ -130,11 +130,11 @@ public class User extends BaseModel {
         this.password = password;
     }
 
-    public List<Conservation> getConservations() {
+    public List<String> getConservations() {
         return conservations;
     }
 
-    public void setConservations(List<Conservation> conservations) {
+    public void setConservations(List<String> conservations) {
         this.conservations = conservations;
     }
 
@@ -159,7 +159,7 @@ public class User extends BaseModel {
     }
 
     private String password;
-    private List<Conservation> conservations;
+    private List<String> conservations;
     private Role role = Role.USER;
     private List<Contact> list_contact;
     boolean isActive = false;

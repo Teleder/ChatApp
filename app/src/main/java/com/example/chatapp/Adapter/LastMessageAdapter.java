@@ -18,6 +18,7 @@ import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.SharedPrefManager;
+import com.example.chatapp.Utils.CONSTS;
 
 import java.util.List;
 
@@ -46,28 +47,26 @@ public class LastMessageAdapter extends RecyclerView.Adapter<LastMessageAdapter.
     public void onBindViewHolder(LastMessageAdapter.LastMessageHolder holder, int position) {
         Conservation conservation = arrList.get(position);
         if (arrList.size() > 0) {
-            if (userProfileDto.getId().equals(conservation.getUserId_1()) && conservation.getGroup() == null) {
+            if (conservation.getGroupId() != null) {
+                holder.tvDisplayName.setText(conservation.getGroup().getName());
+                holder.tvLastMessages.setText(conservation.getLastMessage() != null ? conservation.getLastMessage().getContent() : "Not have message!");
+//                Glide.with(context).load(conservation.getGroup().getAvatarGroup() != null ? conservation.getGroup().getAvatarGroup().replace("localhost:8080", "http://" + CONSTS.BASEURL) : R.drawable.ic_people_24).into(holder.avatar);
+            } else if (userProfileDto.getId().equals(conservation.getUserId_1()) && conservation.getGroup() == null) {
                 holder.tvDisplayName.setText(conservation.getUser_2().getDisplayName());
-                holder.tvLastMessages.setText(conservation.getLastMessage().getContent());
+                holder.tvLastMessages.setText(conservation.getLastMessage() != null ? conservation.getLastMessage().getContent() : "Not have message!");
                 holder.userId.setText(conservation.getUser_2().getId());
                 holder.tvTime.setText("3h");
                 if (conservation.getUser_2().getAvatar() != null)
                     Glide.with(context).load(conservation.getUser_2().getAvatar()).into(holder.avatar);
             } else if (userProfileDto.getId().equals(conservation.getUser_2().getId()) && conservation.getGroup() == null) {
                 holder.tvDisplayName.setText(conservation.getUser_1().getDisplayName());
-                holder.tvLastMessages.setText(conservation.getLastMessage().getContent());
+                holder.tvLastMessages.setText(conservation.getLastMessage() != null ? conservation.getLastMessage().getContent() : "Not have message!");
                 holder.userId.setText(conservation.getUser_1().getId());
                 holder.tvTime.setText("3h");
                 if (conservation.getUser_1().getAvatar() != null)
                     Glide.with(context).load(conservation.getUser_2().getAvatar()).into(holder.avatar);
             }
-//            holder.avatar.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    Intent intent = new Intent(context, ChatActivity.class);
-//                    context.startActivity(intent);
-//                }
-//            });
+
             holder.tvDisplayName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

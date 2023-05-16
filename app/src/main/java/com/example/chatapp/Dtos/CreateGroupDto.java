@@ -6,11 +6,11 @@ import com.example.chatapp.Model.Group.Member;
 import java.util.*;
 
 public class CreateGroupDto {
-    public Set<Member> getMember() {
+    public List<Member> getMember() {
         return member;
     }
 
-    public void setMember(Set<Member> member) {
+    public void setMember(List<Member> member) {
         this.member = member;
     }
 
@@ -46,7 +46,16 @@ public class CreateGroupDto {
         this.name = name;
     }
 
-    Set<Member> member = new HashSet<>();
+    List<Member> member = new ArrayList<>();
+
+    public CreateGroupDto(List<Member> member, boolean isPublic, String avatarGroup, String bio, String name) {
+        this.member = member;
+        this.isPublic = isPublic;
+        this.avatarGroup = avatarGroup;
+        this.bio = bio;
+        this.name = name;
+    }
+
     boolean isPublic;
     private String avatarGroup;
     private String bio;

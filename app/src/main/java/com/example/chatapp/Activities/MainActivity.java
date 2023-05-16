@@ -3,11 +3,13 @@ package com.example.chatapp.Activities;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +18,7 @@ import com.example.chatapp.Adapter.LastMessageAdapter;
 import com.example.chatapp.Dtos.PagedResultDto;
 import com.example.chatapp.Dtos.UserOnlineOfflinePayload;
 import com.example.chatapp.Dtos.UserProfileDto;
+import com.example.chatapp.Inteface.ViewModelAPI;
 import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.Model.User.Contact;
 import com.example.chatapp.R;
@@ -37,28 +40,76 @@ import java.util.List;
 import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements MessageObserver {
-    SharedPrefManager sharedPrefManager;
+    static SharedPrefManager sharedPrefManager;
     ImageView imageViewProfile;
     WebSocketManager webSocketManager;
     RecyclerView lastMessages;
     LastMessageAdapter lastMessageAdapter;
     List<Conservation> listConservations = new ArrayList<>();
-    private RetrofitClient retrofitClient;
+
     private boolean isWebSocketConnected = false;
     private TokenManager tokenManager;
-    private Retrofit retrofit;
-    APIService apiService;
+    static private Retrofit retrofit;
+    static APIService apiService;
+    private static RetrofitClient retrofitClient;
     List<String> groupCode;
+    ViewModelAPI viewModel;
+
+    public static Retrofit getRetrofitC() {
+        return retrofit;
+    }
+
+    public static SharedPrefManager getSharedPrefManager() {
+        return sharedPrefManager;
+    }
+
+    public static RetrofitClient getRetrofitClient() {
+        return retrofitClient;
+    }
+
+    public static APIService getApiService() {
+        return apiService;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        sharedPrefManager = new SharedPrefManager(getApplicationContext());
         retrofitClient = RetrofitClient.getInstance(getApplicationContext());
         tokenManager = retrofitClient.getTokenManager();
         retrofit = retrofitClient.getRetrofit();
-        sharedPrefManager = new SharedPrefManager(getApplicationContext());
+        viewModel = new ViewModelProvider(this).get(ViewModelAPI.class);
         UserProfileDto userProfileDto = sharedPrefManager.getUser();
+        viewModel.getConversationsLiveData().observe(this, conversations -> {
+            if (viewModel.getConversationsLiveData().getValue() == null)
+                return;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listConservations.clear();
+                    listConservations.addAll(viewModel.getConversationsLiveData().getValue());
+                    Log.d("listConservations", listConservations.size() + "");
+                    lastMessageAdapter.notifyDataSetChanged();
+                }
+            });
+        });
+        viewModel.getGroupsLiveData().observe(this, groups -> {
+            if (viewModel.getGroupsLiveData().getValue() == null)
+                return;
+            if (!isWebSocketConnected) {
+                webSocketManager.disconnect();
+                webSocketManager.connect(userProfileDto.getId());
+                webSocketManager.subscribeToPrivateMessages(userProfileDto.getId());
+                for (String a : sharedPrefManager.getListGroupId()) {
+                    webSocketManager.subscribeToGroupMessages(a);
+                }
+                isWebSocketConnected = true;
+            }
+        });
+        viewModel.fetchConversations();
+        viewModel.fetchGroups();
+
+        setContentView(R.layout.activity_main);
         lastMessages = findViewById(R.id.conversationRecyclerView);
         webSocketManager = WebSocketManager.getInstance(MainActivity.this);
         Intent intent = new Intent(this, WebSocketService.class);
@@ -66,11 +117,11 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         intent.putExtra("user_id", userProfileDto.getId());
         startService(intent);
         apiService = retrofitClient.getRetrofit().create(APIService.class);
-        fetchGroup(userProfileDto);
+
 
         if (userProfileDto.getConservations().size() > 0) {
             lastMessages.setVisibility(View.VISIBLE);
-            fetchConservation();
+//            fetchConservation();
             lastMessageAdapter = new LastMessageAdapter(MainActivity.this, listConservations);
             lastMessages.setHasFixedSize(true);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
@@ -105,6 +156,8 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
             } else {
                 Glide.with(getApplicationContext()).load(userProfileDto.getAvatar()).into(imageViewProfile);
             }
+
+
     }
 
     @Override
@@ -145,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
 
 
     public void fetchGroup(UserProfileDto user) {
-
         apiService.getAllIdConservationGroup().enqueue(new retrofit2.Callback<List<String>>() {
             @Override
             public void onResponse(retrofit2.Call<List<String>> call, retrofit2.Response<List<String>> response) {
@@ -179,6 +231,17 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
 
     public void fetchConservation() {
 //        apiService = retrofitClient.getRetrofit().create(APIService.class);
+        if (lastMessageAdapter != null && sharedPrefManager.getListConservation() != null && sharedPrefManager.getListConservation().size() > 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listConservations.clear();
+                    listConservations.addAll(sharedPrefManager.getListConservation());
+                    lastMessageAdapter.notifyDataSetChanged();
+                }
+            });
+            return;
+        }
         apiService.getMyConversations(0, 100).enqueue(new retrofit2.Callback<PagedResultDto<Conservation>>() {
             @Override
             public void onResponse(retrofit2.Call<PagedResultDto<Conservation>> call, retrofit2.Response<PagedResultDto<Conservation>> response) {
@@ -187,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                sharedPrefManager.saveListConservation(response.body().getData());
                                 listConservations.clear();
                                 listConservations.addAll(response.body().getData());
                                 lastMessageAdapter.notifyDataSetChanged();
