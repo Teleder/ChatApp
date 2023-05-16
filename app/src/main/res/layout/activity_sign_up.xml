@@ -8,7 +8,8 @@
     android:overScrollMode="never"
     android:padding="@dimen/_24sdp"
     android:scrollbars="none"
-    tools:context=".Activities.SignUpActivity">
+    tools:context=".Activities.SignUpActivity"
+    android:background="@drawable/signup">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,36 +25,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
-            android:text="Create New Account"
+            android:text="Tạo tài khoản mới"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/_18ssp"
-            android:textStyle="bold"/>
-<!--        <FrameLayout-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/_20sdp"-->
-<!--            >-->
-<!--            <com.makeramen.roundedimageview.RoundedImageView-->
-<!--                android:id="@+id/imageProfile"-->
-<!--                android:layout_width="@dimen/_80sdp"-->
-<!--                android:layout_height="@dimen/_80sdp"-->
-<!--                android:background="@drawable/background_image"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                app:riv_oval="true"/>-->
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:text="Add Image"-->
-<!--                android:textColor="@color/secondary_text"-->
-<!--                android:textSize="@dimen/_10ssp"/>-->
-<!--        </FrameLayout>-->
+            android:textStyle="italic"/>
+
         <EditText
             android:id="@+id/inputFirstName"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_marginTop="@dimen/_20sdp"
-            android:background="@drawable/background_input"
             android:hint="First Name"
             android:text="string"
             android:imeOptions="actionNext"
@@ -62,13 +43,13 @@
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:textColor="@color/primary_text"
-            android:textSize="@dimen/_13ssp"/>
+            android:textSize="@dimen/_13ssp"
+            android:drawableStart="@drawable/ic_person"/>
         <EditText
             android:id="@+id/inputLastName"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_marginTop="@dimen/_20sdp"
-            android:background="@drawable/background_input"
             android:hint="Last Name"
             android:text="string"
             android:imeOptions="actionNext"
@@ -77,13 +58,13 @@
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:textColor="@color/primary_text"
-            android:textSize="@dimen/_13ssp"/>
+            android:textSize="@dimen/_13ssp"
+            android:drawableStart="@drawable/ic_person"/>
         <EditText
             android:id="@+id/inputPhone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_marginTop="@dimen/_16sdp"
-            android:background="@drawable/background_input"
             android:hint="Phone"
             android:text="string"
             android:imeOptions="actionNext"
@@ -92,13 +73,13 @@
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:textColor="@color/primary_text"
-            android:textSize="@dimen/_13ssp"/>
+            android:textSize="@dimen/_13ssp"
+            android:drawableStart="@drawable/ic_phone"/>
         <EditText
             android:id="@+id/inputEmail"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_marginTop="@dimen/_16sdp"
-            android:background="@drawable/background_input"
             android:hint="@string/Email"
             android:text="string"
             android:imeOptions="actionNext"
@@ -107,13 +88,13 @@
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:textColor="@color/primary_text"
-            android:textSize="@dimen/_13ssp"/>
+            android:textSize="@dimen/_13ssp"
+            android:drawableStart="@drawable/ic_email"/>
         <EditText
             android:id="@+id/inputPassword"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_marginTop="@dimen/_16sdp"
-            android:background="@drawable/background_input"
             android:hint="@string/password"
             android:text="nf;@'t)Z #3Ua"
             android:imeOptions="actionNext"
@@ -122,13 +103,13 @@
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:textColor="@color/primary_text"
-            android:textSize="@dimen/_13ssp"/>
+            android:textSize="@dimen/_13ssp"
+            android:drawableStart="@drawable/ic_password"/>
         <EditText
             android:id="@+id/inputConfirmPassword"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_45sdp"
             android:layout_marginTop="@dimen/_16sdp"
-            android:background="@drawable/background_input"
             android:hint="Confirm Password"
             android:text="nf;@'t)Z #3Ua"
             android:imeOptions="actionDone"
@@ -137,13 +118,14 @@
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:textColor="@color/primary_text"
-            android:textSize="@dimen/_13ssp"/>
+            android:textSize="@dimen/_13ssp"
+            android:drawableStart="@drawable/ic_password"/>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSignUp"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
             android:layout_marginTop="@dimen/_16sdp"
-            android:text="@string/sign_up"
+            android:text="Đăng ký"
             android:textColor="@color/white"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold"
@@ -153,9 +135,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
-            android:text="Sign in"
+            android:text="Bạn đã có tài khoản? Đăng nhập"
             android:textColor="@color/primary"
             android:textSize="@dimen/_13ssp"
-            android:textStyle="bold"/>
+            android:textStyle="italic"/>
     </LinearLayout>
 </ScrollView>

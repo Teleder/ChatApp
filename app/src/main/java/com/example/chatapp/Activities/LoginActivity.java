@@ -77,14 +77,14 @@ public class LoginActivity extends AppCompatActivity {
     private void login() {
         final String emailuser = email.getText().toString();
         final String pass = password.getText().toString();
-        if (TextUtils.isEmpty(pass)) {
-            password.setError("Please enter your password");
-            password.requestFocus();
+        if (TextUtils.isEmpty(emailuser)) {
+            email.setError("Hãy nhập email!");
+            email.requestFocus();
             return;
         }
-        if (TextUtils.isEmpty(emailuser)) {
-            email.setError("Please enter your email");
-            email.requestFocus();
+        if (TextUtils.isEmpty(pass)) {
+            password.setError("Hãy nhập password!");
+            password.requestFocus();
             return;
         }
         apiService = retrofit.create(APIService.class);

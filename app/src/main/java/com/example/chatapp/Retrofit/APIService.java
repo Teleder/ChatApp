@@ -38,6 +38,7 @@ public interface APIService {
     Call<UserDto> createUser(@Body CreateUserDto user);
     @POST("auth/login")
     Call<LoginDto> loginUser(@Body LoginInputDto login);
+
     @PATCH("users/profile")
     Call<UserDto> updateProfile(@Body UpdateInfoUserDto updateInfoUserDto);
     @GET("users/contact-waiting-accept")

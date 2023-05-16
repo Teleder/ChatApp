@@ -8,7 +8,7 @@ public class UserDto extends UpdateUserDto {
     public DateTime updateAt;
     private String id;
     private File qr;
-    public UserDto(String firstName, String lastName, String phone, String email, String bio, String password) {
-        super(firstName, lastName, phone, email, bio, password);
+    public UserDto(String firstName, String lastName, String phone, String email, String bio, String password, File avatar) {
+        super(firstName, lastName, phone, email, bio, password, avatar);
     }
 }

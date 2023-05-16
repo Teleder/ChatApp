@@ -22,18 +22,24 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.example.chatapp.Dtos.PayloadMessage;
 import com.example.chatapp.Dtos.UpdateInfoUserDto;
 import com.example.chatapp.Dtos.UserDto;
 import com.example.chatapp.Dtos.UserProfileDto;
-import com.example.chatapp.Model.File.File;
+import com.example.chatapp.Model.User.User;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Retrofit.TokenManager;
+import com.example.chatapp.Utils.RealPathUtil;
 
 import java.io.IOException;
+import java.io.File;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,6 +66,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private RetrofitClient retrofitClient;
     private TokenManager tokenManager;
     private Retrofit retrofit;
+    com.example.chatapp.Model.File.File avatarFile;
     private final ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -75,6 +82,8 @@ public class EditProfileActivity extends AppCompatActivity {
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                             editImage.setImageBitmap(bitmap);
+//                            Toast.makeText(getApplicationContext(),"set tai day",Toast.LENGTH_SHORT).show();
+                            uploadFile(RealPathUtil.getRealPath(getApplicationContext(), mUri),userProfileDto.getId().toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -134,28 +143,28 @@ public class EditProfileActivity extends AppCompatActivity {
         final String phoneUser = editPhone.getText().toString();
         final String bioUser = editBio.getText().toString();
         if (TextUtils.isEmpty(fName)) {
-            editFirstName.setError("Please enter your firstname");
+            editFirstName.setError("Hãy nhập họ!");
             editFirstName.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(lName)) {
-            editLastName.setError("Please enter your lastname");
+            editLastName.setError("Hãy nhập tên");
             editLastName.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(bioUser)) {
-            editBio.setError("Please enter your bio");
+            editBio.setError("Hãy nhập mô tả");
             editBio.requestFocus();
             return;
         }
         apiService = retrofitClient.getRetrofit().create(APIService.class);
-        File file = new File();
+//        File file = new File();
 
 //        String IMAGE_PATH = RealPathUtil.getRealPath(this, mUri);
 //        File file = new File(IMAGE_PATH);
 //        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 //        MultipartBody.Part partbodyavatar = MultipartBody.Part.createFormData(CONSTS.MY_IMAGES, file.getName(), requestFile);
-        UpdateInfoUserDto updateInfoUserDto = new UpdateInfoUserDto(fName, lName, phoneUser, emailUser, bioUser);
+        UpdateInfoUserDto updateInfoUserDto = new UpdateInfoUserDto(fName, lName, phoneUser, emailUser, bioUser, avatarFile);
         apiService.updateProfile(updateInfoUserDto).enqueue(new Callback<UserDto>() {
             @Override
             public void onResponse(Call<UserDto> call, Response<UserDto> response) {
@@ -165,7 +174,8 @@ public class EditProfileActivity extends AppCompatActivity {
                         userProfileDto.setLastName(response.body().getLastName());
                         userProfileDto.setBio(response.body().getBio());
                         userProfileDto.setDisplayName(response.body().getFirstName() + " " + response.body().getLastName());
-                        Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
+                        userProfileDto.setAvatar(response.body().getAvatar());
+                        Toast.makeText(getApplicationContext(), "upload", Toast.LENGTH_SHORT).show();
                         finish();
                         Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
                         startActivity(intent);
@@ -174,13 +184,41 @@ public class EditProfileActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "failed", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UserDto> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public void uploadFile(String filePath, String code) {
+        File file = new File(filePath);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), file);
+        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+        apiService = retrofitClient.getRetrofit().create(APIService.class);
+        apiService.uploadFile(code, filePart).enqueue(new retrofit2.Callback<com.example.chatapp.Model.File.File>() {
+            @Override
+            public void onResponse(retrofit2.Call<com.example.chatapp.Model.File.File> call, retrofit2.Response<com.example.chatapp.Model.File.File> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        avatarFile = response.body();
+                        User user = new User(userProfileDto.getId(), userProfileDto.getFirstName(), userProfileDto.getLastName(), userProfileDto.getPhone(), userProfileDto.getEmail(), userProfileDto.getBio(), "");
+                        avatarFile.setUser_own(user);
+                        Toast.makeText(EditProfileActivity.this,"success", Toast.LENGTH_SHORT).show();
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(EditProfileActivity.this, "fail", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<com.example.chatapp.Model.File.File> call, Throwable t) {
+                Toast.makeText(EditProfileActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
