@@ -44,7 +44,8 @@ public class SearchActivity extends AppCompatActivity {
         tokenManager = retrofitClient.getTokenManager();
         retrofit = retrofitClient.getRetrofit();
         sharedPrefManager = new SharedPrefManager(getApplicationContext());
-        searchView.clearFocus();
+//        searchView.clearFocus();
+        searchView.requestFocus();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {

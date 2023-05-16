@@ -8,12 +8,19 @@
     android:overScrollMode="never"
     android:padding="@dimen/_24sdp"
     android:scrollbars="none"
-    tools:context=".Activities.LoginActivity">
+    tools:context=".Activities.LoginActivity"
+    >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/logo"
+            />
 
         <ProgressBar
             android:id="@+id/processBar"
@@ -26,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_40sdp"
-            android:text="Welcome Back!"
+            android:text="Chào mừng quay trở lại"
             android:textColor="@color/primary_text"
             android:textSize="@dimen/_18ssp"
             android:textStyle="bold" />
@@ -35,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_4sdp"
-            android:text="Login to continue"
+            android:text="Đăng nhập để tiếp tục"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/_12ssp"
             android:textStyle="bold"/>
@@ -53,7 +60,8 @@
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:textColor="@color/primary_text"
-            android:textSize="@dimen/_13ssp"/>
+            android:textSize="@dimen/_13ssp"
+            android:drawableStart="@drawable/ic_email"/>
         <EditText
             android:id="@+id/inputPassword"
             android:layout_width="match_parent"
@@ -68,7 +76,9 @@
             android:paddingStart="@dimen/_16sdp"
             android:paddingEnd="@dimen/_16sdp"
             android:textColor="@color/primary_text"
-            android:textSize="@dimen/_13ssp"/>
+            android:textSize="@dimen/_13ssp"
+            android:drawableStart="@drawable/password"
+            />
 
         <TextView
             android:id="@+id/tvForgetPass"
@@ -76,8 +86,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_30sdp"
             android:gravity="right"
-            android:text="Forget Password?"
-            android:textColor="@color/primary"
+            android:text="Quên mật khẩu?"
+            android:textColor="@color/blue"
             android:textSize="@dimen/_13ssp"
             android:textStyle="italic" />
 
@@ -86,7 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
             android:layout_marginTop="@dimen/_20sdp"
-            android:text="@string/sign_in"
+            android:text="Đăng nhập"
             android:textColor="@color/white"
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold"
@@ -97,9 +107,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_30sdp"
-            android:text="@string/create_new_account"
+            android:text="Tạo tài khoản mới"
             android:textColor="@color/primary"
             android:textSize="@dimen/_13ssp"
-            android:textStyle="bold"/>
+            android:textStyle="italic"/>
     </LinearLayout>
 </ScrollView>
