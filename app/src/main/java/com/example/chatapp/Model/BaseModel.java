@@ -28,7 +28,7 @@ public class BaseModel {
     }
 
     boolean isDeleted = false;
-    private Date createAt = new Date();
-    private Date updateAt = new Date();
+    private Date createAt;
+    private Date updateAt;
 }
 

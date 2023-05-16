@@ -11,10 +11,12 @@ import com.example.chatapp.Dtos.PayloadMessage;
 import com.example.chatapp.Dtos.PayloadAction;
 import com.example.chatapp.Dtos.PayloadMessage;
 import com.example.chatapp.Dtos.RoleDto;
+import com.example.chatapp.Dtos.TokenResetPass;
 import com.example.chatapp.Dtos.UpdateInfoUserDto;
 import com.example.chatapp.Dtos.UserDto;
 import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.Dtos.UserProfileDto;
+import com.example.chatapp.Dtos.resetPass;
 import com.example.chatapp.Model.Conservation.Conservation;
 import com.example.chatapp.Model.File.File;
 import com.example.chatapp.Model.Group.Group;
@@ -133,4 +135,11 @@ public interface APIService {
     Call<Void> leaveGroup(@Path("groupId") String groupId);
     @GET("groups/get-friend-add-group/{groupId}")
     Call<List<UserBasicDto>> getNonBlockedNonMemberFriends(@Path("groupId") String groupId);
+
+    @POST("auth/request-pin/{phone}")
+    Call<ResponseBody> reQuestPin(@Path("phone") String phone);
+    @POST("auth/validate-pin/{phone}")
+    Call<ResponseBody> validatePin(@Path("phone") String phone, @Body TokenResetPass token);
+    @POST("auth/reset-password")
+    Call<Boolean> resetPassword(@Body resetPass resetPass);
 }
