@@ -81,21 +81,26 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         viewModel = new ViewModelProvider(this).get(ViewModelAPI.class);
         UserProfileDto userProfileDto = sharedPrefManager.getUser();
         viewModel.getConversationsLiveData().observe(this, conversations -> {
-            if (viewModel.getConversationsLiveData().getValue() == null)
+            if (viewModel.getConversationsLiveData().getValue() == null){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        listConservations = sharedPrefManager.getListConservation();
+                        lastMessageAdapter.notifyDataSetChanged();
+                    }
+                });
                 return;
+            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     listConservations.clear();
                     listConservations.addAll(viewModel.getConversationsLiveData().getValue());
-                    Log.d("listConservations", listConservations.size() + "");
                     lastMessageAdapter.notifyDataSetChanged();
                 }
             });
         });
         viewModel.getGroupsLiveData().observe(this, groups -> {
-            if (viewModel.getGroupsLiveData().getValue() == null)
-                return;
             if (!isWebSocketConnected) {
                 webSocketManager.disconnect();
                 webSocketManager.connect(userProfileDto.getId());
