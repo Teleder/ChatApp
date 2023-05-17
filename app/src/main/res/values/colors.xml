@@ -19,4 +19,14 @@
     <color name="followingBg">#49BEFF</color>
     <color name="grey">#E5E5E5</color>
     <color name="purple_500">#9C27B0</color>
+
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="greenLight">#11F311</color>
+    <color name="greenDark">#0EC20E</color>
+    <color name="redLight">#D53232</color>
+    <color name="redDark">#952323</color>
+    <color name="greyLight">#ADA9A9</color>
 </resources>

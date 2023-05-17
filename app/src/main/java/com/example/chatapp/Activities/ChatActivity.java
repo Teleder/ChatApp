@@ -3,6 +3,7 @@ package com.example.chatapp.Activities;
 import static android.os.Environment.DIRECTORY_DOWNLOADS;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.Context;
@@ -110,6 +111,7 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
     private long totalMessage = 21;
     private int nextPage = 0;
     private final int limitMessage = 20;
+    TextView txt_announce;
     private final Handler typingHandler = new Handler();
     private final Runnable typingRunnable = new Runnable() {
         @Override
@@ -176,7 +178,7 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
             List<Conservation> cons = sharedPrefManager.getListConservation();
             int pos = 0;
             for (Conservation con : cons) {
-                if (con.getCode().equals(mess.getCode())){
+                if (con.getCode().equals(mess.getCode())) {
                     con.setLastMessage(mess);
                     break;
                 }
@@ -311,6 +313,23 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
         txtName = findViewById(R.id.txtName);
         txtStatus = findViewById(R.id.txt_member);
         ic_active = findViewById(R.id.ic_active);
+        txt_announce = findViewById(R.id.txt_announce);
+
+        if (!sharedPrefManager.getCurrentConservation().isStatus()) {
+            txt_announce.setVisibility(View.VISIBLE);
+            inputMessage.setVisibility(View.GONE);
+            layoutSend.setVisibility(View.GONE);
+            layoutAttach.setVisibility(View.GONE);
+            layoutAudio.setVisibility(View.GONE);
+            layoutEmoji.setVisibility(View.GONE);
+        } else {
+            txt_announce.setVisibility(View.GONE);
+            inputMessage.setVisibility(View.VISIBLE);
+            layoutSend.setVisibility(View.VISIBLE);
+            layoutAttach.setVisibility(View.VISIBLE);
+            layoutAudio.setVisibility(View.VISIBLE);
+            layoutEmoji.setVisibility(View.VISIBLE);
+        }
         txtName.setText((sharedPrefManager.getCurrentConservation().getUserId_1().
                 equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).getDisplayName());
         if ((sharedPrefManager.getCurrentConservation().getUserId_1().
@@ -323,6 +342,8 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
                     equals(sharedPrefManager.getUser().getId()) ? sharedPrefManager.getCurrentConservation().getUser_2() : sharedPrefManager.getCurrentConservation().getUser_1()).getLastActiveAt()) + " ago");
             ic_active.setVisibility(View.GONE);
         }
+
+
         EmojiManager.install(new GoogleEmojiProvider());
 
 //        rcMessages.setHasFixedSize(true);
@@ -466,7 +487,8 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
         findViewById(R.id.imageInfo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivities(new Intent[]{new Intent(ChatActivity.this, SettingChatFriendActivity.class)});
+                Intent intent = new Intent(ChatActivity.this, DetailChatActivity.class);
+                startActivityForResult(intent, 999);
             }
         });
     }
@@ -655,11 +677,31 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && data != null) {
-            List<Uri> arrayList = data.getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA);
-            for (Uri uri : arrayList) {
-                uploadFile(getRealPathFromURI(ChatActivity.this, uri),
-                        sharedPrefManager.getCurrentConservation() != null ? sharedPrefManager.getCurrentConservation().getCode() : "12021", determineFileCategory(uri));
+        if (requestCode == 999) {
+            if(resultCode == Activity.RESULT_OK){
+                if (!sharedPrefManager.getCurrentConservation().isStatus()) {
+                    txt_announce.setVisibility(View.VISIBLE);
+                    inputMessage.setVisibility(View.GONE);
+                    layoutSend.setVisibility(View.GONE);
+                    layoutAttach.setVisibility(View.GONE);
+                    layoutAudio.setVisibility(View.GONE);
+                    layoutEmoji.setVisibility(View.GONE);
+                } else {
+                    txt_announce.setVisibility(View.GONE);
+                    inputMessage.setVisibility(View.VISIBLE);
+                    layoutSend.setVisibility(View.VISIBLE);
+                    layoutAttach.setVisibility(View.VISIBLE);
+                    layoutAudio.setVisibility(View.VISIBLE);
+                    layoutEmoji.setVisibility(View.VISIBLE);
+                }
+            }
+        }else{
+            if (resultCode == RESULT_OK && data != null) {
+                List<Uri> arrayList = data.getParcelableArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA);
+                for (Uri uri : arrayList) {
+                    uploadFile(getRealPathFromURI(ChatActivity.this, uri),
+                            sharedPrefManager.getCurrentConservation() != null ? sharedPrefManager.getCurrentConservation().getCode() : "12021", determineFileCategory(uri));
+                }
             }
         }
     }
@@ -768,7 +810,7 @@ public class ChatActivity extends AppCompatActivity implements MessageObserver {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(ChatActivity.this, "fail send message", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 

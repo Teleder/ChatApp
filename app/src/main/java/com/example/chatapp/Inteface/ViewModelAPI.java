@@ -32,7 +32,7 @@ public class ViewModelAPI extends ViewModel {
 
     public void fetchConversations() {
         if (sharedPrefManager.getListConservation() != null) {
-            conversationsLiveData.setValue(null);
+            conversationsLiveData.setValue(sharedPrefManager.getListConservation());
             return;
         }
         apiService = retrofitClient.getRetrofit().create(APIService.class);
@@ -58,7 +58,7 @@ public class ViewModelAPI extends ViewModel {
 
     public void fetchGroups() {
         if (sharedPrefManager.getListGroupId() != null ) {
-            groupsLiveData.setValue(null);
+            groupsLiveData.setValue(sharedPrefManager.getListGroupId());
             return;
         }
         apiService = retrofitClient.getRetrofit().create(APIService.class);

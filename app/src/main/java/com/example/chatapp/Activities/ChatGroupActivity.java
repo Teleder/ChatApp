@@ -57,6 +57,7 @@ import com.example.chatapp.Utils.CONSTS;
 import com.example.chatapp.Utils.MessageObserver;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.vanniktech.emoji.EmojiManager;
 import com.vanniktech.emoji.EmojiPopup;
 import com.vanniktech.emoji.google.GoogleEmojiProvider;
@@ -101,6 +102,7 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
     private Retrofit retrofit;
     private VideoView videoPreview;
     private ImageView imagePreview, ic_active;
+    RoundedImageView imageGroup;
     private TextView txtStatus, txtName;
     private MediaRecorder recorder;
     private FrameLayout layoutAttach;
@@ -165,7 +167,7 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
             List<Conservation> cons = sharedPrefManager.getListConservation();
             int pos = 0;
             for (Conservation con : cons) {
-                if (con.getCode().equals(mess.getCode())){
+                if (con.getCode().equals(mess.getCode())) {
                     con.setLastMessage(mess);
                     break;
                 }
@@ -250,6 +252,13 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         txtName = findViewById(R.id.txtName);
         txtStatus = findViewById(R.id.txt_member);
         ic_active = findViewById(R.id.ic_active);
+        imageGroup = findViewById(R.id.imageGroup);
+
+        if (sharedPrefManager.getCurrentGroup() != null && sharedPrefManager.getCurrentGroup().getAvatarGroup() != null)
+            Glide.with(ChatGroupActivity.this).load(sharedPrefManager.getCurrentGroup().getAvatarGroup().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(imageGroup);
+        else
+            Glide.with(ChatGroupActivity.this).load(R.drawable.ic_group).into(imageGroup);
+
         txtStatus.setText(sharedPrefManager.getCurrentConservation().getGroup().getMember().size() + " members");
         getDetailGroup();
         EmojiManager.install(new GoogleEmojiProvider());
@@ -651,7 +660,8 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         });
     }
 
-    public void sendGroupMessage(String groupId, PayloadMessage message) {        apiService = retrofitClient.getRetrofit().create(APIService.class);
+    public void sendGroupMessage(String groupId, PayloadMessage message) {
+        apiService = retrofitClient.getRetrofit().create(APIService.class);
 
         apiService.sendGroupMessage(groupId, message).enqueue(new retrofit2.Callback<Message>() {
             @Override
@@ -678,7 +688,8 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
         });
     }
 
-    public void getDetailGroup() {        apiService = retrofitClient.getRetrofit().create(APIService.class);
+    public void getDetailGroup() {
+        apiService = retrofitClient.getRetrofit().create(APIService.class);
 
         apiService.getDetailGroup(sharedPrefManager.getCurrentConservation().getGroupId()).enqueue(new retrofit2.Callback<GroupDto>() {
             @Override
@@ -698,7 +709,7 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(ChatGroupActivity.this, "fail send message", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChatGroupActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 

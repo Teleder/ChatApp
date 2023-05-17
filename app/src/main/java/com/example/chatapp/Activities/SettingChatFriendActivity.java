@@ -19,7 +19,7 @@ public class SettingChatFriendActivity extends AppCompatActivity {
         findViewById(R.id.imageBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivities(new Intent[]{new Intent(SettingChatFriendActivity.this, ChatActivity.class)});
+                finish();
             }
         });
         findViewById(R.id.tv_rename).setOnClickListener(new View.OnClickListener() {

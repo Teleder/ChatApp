@@ -8,13 +8,11 @@ import com.example.chatapp.Dtos.LoginInputDto;
 import com.example.chatapp.Dtos.PagedResultDto;
 import com.example.chatapp.Dtos.PayloadAction;
 import com.example.chatapp.Dtos.PayloadMessage;
-import com.example.chatapp.Dtos.PayloadAction;
-import com.example.chatapp.Dtos.PayloadMessage;
 import com.example.chatapp.Dtos.RoleDto;
 import com.example.chatapp.Dtos.TokenResetPass;
 import com.example.chatapp.Dtos.UpdateInfoUserDto;
-import com.example.chatapp.Dtos.UserDto;
 import com.example.chatapp.Dtos.UserBasicDto;
+import com.example.chatapp.Dtos.UserDto;
 import com.example.chatapp.Dtos.UserProfileDto;
 import com.example.chatapp.Dtos.resetPass;
 import com.example.chatapp.Model.Conservation.Conservation;
@@ -45,23 +43,34 @@ public interface APIService {
     // User
     @POST("users")
     Call<UserDto> createUser(@Body CreateUserDto user);
+
     @POST("auth/login")
     Call<LoginDto> loginUser(@Body LoginInputDto login);
 
     @PATCH("users/profile")
     Call<UserDto> updateProfile(@Body UpdateInfoUserDto updateInfoUserDto);
+
     @GET("users/contact-waiting-accept")
     Call<PagedResultDto<Contact>> getContactRequestSend(@Query("page") int page, @Query("size") int size);
+
     @FormUrlEncoded
     @PATCH("users/respond-to-request-for-contacts")
     Call<Boolean> AcceptContact(@Field("contactId") String contactId, @Field("accept") boolean accept);
+
     @GET("users/contacts")
     Call<PagedResultDto<UserBasicDto>> getContacts(@Query("displayName") String displayName, @Query("page") int page, @Query("size") int size);
+
     @PATCH("users/remove-contact")
     Call<Boolean> UnFriend(@Query("contactId") String contactId);
+
     @GET("users/search")
     Call<List<UserBasicDto>> SearchFriend(@Query("searchText") String searchText);
 
+    @PATCH("users/remove-block")
+    Call<Boolean> removeBlock(@Query("contactId") String contactId);
+
+    @PATCH("users/block-contact")
+    Call<Boolean> blockContact(@Query("contactId") String contactId, @Query("reason") String reason);
 
     // file
     @Multipart
@@ -70,6 +79,7 @@ public interface APIService {
             @Query("code") String code,
             @Part MultipartBody.Part file
     );
+
     @Multipart
     @POST("files/cloud/upload")
     Call<File> uploadFileCloud(
@@ -88,58 +98,81 @@ public interface APIService {
             @Query("size") int size,
             @Query("content") String content
     );
+
     @POST("messages/sendAction")
     Call<ResponseBody> sendAction(@Body PayloadAction payloadAction);
+
     @PATCH("users/add-contact")
     Call<Boolean> AddFriend(@Query("contactId") String contactId);
+
     @PATCH("users/remove-request-friend")
     Call<UserProfileDto> RemoveRequestAddFriend(@Query("contactId") String contactId);
+
     @POST("messages/groupMessage/{groupId}")
     Call<Message> sendGroupMessage(@Path("groupId") String groupId, @Body PayloadMessage message);
 
     // Conservation
     @GET("conservations/get-my-conversations")
     Call<PagedResultDto<Conservation>> getMyConversations(@Query("page") int page, @Query("size") int size);
+
     @GET("conservations/get-my-conversations-group")
     Call<List<String>> getAllIdConservationGroup();
+
+    @DELETE("conservations/delete/{code}")
+    Call<Boolean> deleteConservation(@Path("code") String code);
 
     //Group
     @GET("groups/{id}")
     Call<GroupDto> getDetailGroup(@Path("id") String groupId);
+
     @POST("groups/{groupId}/create-role")
     Call<Group> createRoleForGroup(@Path("groupId") String groupId, @Body RoleDto roleRequest);
+
     @DELETE("groups/{groupId}/delete-role")
     Call<Void> deleteRoleForGroup(@Path("groupId") String groupId, @Query("roleName") String roleName);
+
     @POST("groups/create")
     Call<GroupDto> createGroup(@Body CreateGroupDto input);
+
     @PATCH("groups/{groupId}/add-member")
     Call<Group> addMemberToGroup(@Path("groupId") String groupId, @Query("memberId") String memberId);
+
     @PATCH("groups/{groupId}/block-member")
-    Call<Group> blockMemberFromGroup(@Path("groupId") String groupId, @Query("memberId") String memberId,  @Query("reason") String reason);
+    Call<Group> blockMemberFromGroup(@Path("groupId") String groupId, @Query("memberId") String memberId, @Query("reason") String reason);
+
     @PATCH("groups/{groupId}/remove-block-member")
     Call<Group> removeBlockMemberFromGroup(@Path("groupId") String groupId, @Query("memberId") String memberId);
+
     @PATCH("groups/{groupId}/remove-member")
     Call<Group> removeMemberFromGroup(@Path("groupId") String groupId, @Query("memberId") String memberId);
+
     @PATCH("groups/{groupId}/remove-member")
     Call<Group> decentralization(@Path("groupId") String groupId, @Query("memberId") String memberId, @Query("roleName") String roleName);
+
     @PATCH("groups/{groupId}/response-member-join")
     Call<Member> getRequestMemberJoin(@Path("groupId") String groupId, @Query("memberId") String memberId);
+
     @GET("groups/{groupId}/request-member-join")
     Call<Void> responseMemberJoin(@Path("groupId") String groupId, @Query("memberId") String memberId, @Query("accept") Boolean accept);
+
     @GET("groups/{groupId}/members-paginate")
     Call<Void> getMembersPaginate(@Path("groupId") String groupId, @Query("search") String search, @Query("page") int page, @Query("size") int size);
+
     @GET("groups/{groupId}/groups-paginate")
     Call<Void> getMyGroupsPaginate(@Path("groupId") String groupId, @Query("search") String search, @Query("page") int page, @Query("size") int size);
 
     @PATCH("groups/{groupId}/leave-group")
     Call<Void> leaveGroup(@Path("groupId") String groupId);
+
     @GET("groups/get-friend-add-group/{groupId}")
     Call<List<UserBasicDto>> getNonBlockedNonMemberFriends(@Path("groupId") String groupId);
 
     @POST("auth/request-pin/{phone}")
     Call<ResponseBody> reQuestPin(@Path("phone") String phone);
+
     @POST("auth/validate-pin/{phone}")
     Call<ResponseBody> validatePin(@Path("phone") String phone, @Body TokenResetPass token);
+
     @POST("auth/reset-password")
     Call<Boolean> resetPassword(@Body resetPass resetPass);
 }

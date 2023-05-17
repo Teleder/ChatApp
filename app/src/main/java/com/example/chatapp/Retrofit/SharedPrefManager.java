@@ -181,6 +181,7 @@ public class SharedPrefManager {
         Intent intent = new Intent(ctx, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ctx.startActivity(intent);
+        WebSocketManager.getInstance(ctx).disconnect();
 //        ctx.startActivities(new Intent[]{new Intent(ctx, LoginActivity.class)});
     }
 

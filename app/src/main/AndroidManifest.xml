@@ -12,6 +12,9 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
@@ -41,7 +44,26 @@
             android:name=".Activities.SettingChatFriendActivity"
             android:exported="true" />
         <activity
+            android:name=".Activities.DetailChatActivity"
+            android:exported="true" />
+        <activity
             android:name=".Activities.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Calling.IncomingCall2Activity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Calling.OutgoingCall2Activity"
+            android:exported="false" />
+        <activity
+            android:name=".Calling.MainCallActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Calling.IncomingCallActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Calling.OutgoingCallActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.ContactActivity"
