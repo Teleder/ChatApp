@@ -35,6 +35,9 @@
             android:name=".Activities.NewPassActivity"
             android:exported="false" />
         <activity
+            android:name=".Activities.GroupDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activities.CodeWhenResetActivity"
             android:exported="false" />
         <activity

@@ -269,7 +269,15 @@ public class ChatGroupActivity extends AppCompatActivity implements MessageObser
                 openEmojiPanel();
             }
         });
-
+        findViewById(R.id.imageInfo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ChatGroupActivity.this, GroupDetailActivity.class);
+                intent.putExtra("groupId", sharedPrefManager.getCurrentConservation().getGroupId());
+                startActivity(intent);
+//                startActivities(new Intent[]{new Intent(ChatGroupActivity.this, GroupDetailActivity.class)});
+            }
+        });
 
 //        rcMessages.setHasFixedSize(true);
         chatAdapter = new ChatAdapter(rcMessages, this, messages, apiService, retrofitClient, new ChatAdapter.MessageClickListener() {
