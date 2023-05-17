@@ -17,6 +17,7 @@ import com.example.chatapp.Model.User.Contact;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
+import com.example.chatapp.Utils.CONSTS;
 
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class WaitingAcceptContactAdapter extends RecyclerView.Adapter<WaitingAcc
     public void onBindViewHolder(ContactHolder holder, int position) {
         Contact contactModel = arrList.get(position);
         if (contactModel.getUser().getAvatar() != null)
-            Glide.with(context).load(contactModel.getUser().getAvatar()).into(holder.avatar);
+            Glide.with(context).load(contactModel.getUser().getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(holder.avatar);
         holder.tvDisplayName.setText(contactModel.getUser().getDisplayName());
         holder.tvBio.setText(contactModel.getUser().getBio());
         holder.userId.setText(contactModel.getUser().getId());

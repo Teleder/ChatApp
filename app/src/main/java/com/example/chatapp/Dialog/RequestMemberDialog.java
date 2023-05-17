@@ -11,16 +11,14 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.chatapp.Adapter.MemberAdapter;
 import com.example.chatapp.Adapter.MembersAdapter;
-import com.example.chatapp.Adapter.RoleAdapter;
 import com.example.chatapp.Dtos.UserBasicDto;
-import com.example.chatapp.Model.Group.Member;
+import com.example.chatapp.Model.User.Contact;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
-import com.example.chatapp.Retrofit.TokenManager;
 
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -34,6 +32,7 @@ public class RequestMemberDialog extends DialogFragment {
     private Retrofit retrofit;
     APIService apiService;
     List<UserBasicDto> members;
+    RecyclerView recyclerView;
 
     public RequestMemberDialog(String groupId) {
         this.groupId = groupId;
@@ -47,26 +46,26 @@ public class RequestMemberDialog extends DialogFragment {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_request_member, null);
         retrofitClient = RetrofitClient.getInstance(view.getContext());
         retrofit = retrofitClient.getRetrofit();
-        getListMembers(groupId,view);
-        RecyclerView recyclerView = view.findViewById(R.id.request_member_recyclerview);
-        MembersAdapter memberAdapter = new MembersAdapter(view.getContext(),members);
+        getListMembers(groupId, view);
+        recyclerView = view.findViewById(R.id.request_member_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(memberAdapter);
-
         Button closeButton = view.findViewById(R.id.close_dialog);
         closeButton.setOnClickListener(v -> dismiss());
 
         builder.setView(view);
         return builder.create();
     }
+
     public void getListMembers(String groupId, View view) {
         apiService = retrofitClient.getRetrofit().create(APIService.class);
-        apiService.getNonBlockedNonMemberFriends(groupId).enqueue(new Callback<List<UserBasicDto>>() {
+        apiService.getWaitingAccept(groupId).enqueue(new Callback<List<UserBasicDto>>() {
             @Override
             public void onResponse(Call<List<UserBasicDto>> call, Response<List<UserBasicDto>> response) {
                 if (response.isSuccessful()) {
                     try {
                         members = response.body();
+                        MembersAdapter memberAdapter = new MembersAdapter(view.getContext(),members, groupId);
+                        recyclerView.setAdapter(memberAdapter);
                     } catch (RuntimeException e) {
                         e.printStackTrace();
                     }

@@ -19,6 +19,7 @@ import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
 import com.example.chatapp.Retrofit.SharedPrefManager;
+import com.example.chatapp.Utils.CONSTS;
 
 import java.util.List;
 
@@ -55,8 +56,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchCont
     @Override
     public void onBindViewHolder(SearchAdapter.SearchContactHolder holder, int position) {
         UserBasicDto UserBasicDto = arrList.get(position);
-        if (UserBasicDto.getAvatar() != null)
-            Glide.with(context).load(UserBasicDto.getAvatar()).into(holder.avatar);
+        if (UserBasicDto != null && UserBasicDto.getAvatar() != null && UserBasicDto.getAvatar().getUrl() != null)
+            Glide.with(context).load(UserBasicDto.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(holder.avatar);
         holder.tvDisplayName.setText(UserBasicDto.getDisplayName());
         holder.tvBio.setText(UserBasicDto.getBio());
         holder.userId.setText(UserBasicDto.getId());
@@ -129,7 +130,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchCont
 
         public SearchContactHolder(View itemView) {
             super(itemView);
-            avatar = itemView.findViewById(R.id.imgUser);
+            avatar = itemView.findViewById(R.id.image_User);
             tvDisplayName = itemView.findViewById(R.id.tvNameUser);
             tvBio = itemView.findViewById(R.id.tvBioUser);
             btnAddFriend = itemView.findViewById(R.id.btnAddFriend);

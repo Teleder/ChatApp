@@ -34,6 +34,7 @@ import com.example.chatapp.Model.Group.Member;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
+import com.example.chatapp.Retrofit.SharedPrefManager;
 import com.example.chatapp.Utils.CONSTS;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -61,6 +62,7 @@ public class CreateGroupFragment extends Fragment implements AddMemberDialog.OnM
     private Retrofit retrofit;
     APIService apiService;
     Uri currentFile = null;
+    SharedPrefManager sharedPrefManager;
     private RetrofitClient retrofitClient;
 
     public CreateGroupFragment() {
@@ -70,7 +72,8 @@ public class CreateGroupFragment extends Fragment implements AddMemberDialog.OnM
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        sharedPrefManager = SharedPrefManager.getInstance(getContext());
+        retrofitClient = RetrofitClient.getInstance(getContext());
         launcher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -215,6 +218,7 @@ public class CreateGroupFragment extends Fragment implements AddMemberDialog.OnM
                 if (response.isSuccessful()) {
                     try {
                         if (response.isSuccessful()) {
+                            sharedPrefManager.saveListConservation(null);
                             Intent intent = new Intent(getActivity(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);

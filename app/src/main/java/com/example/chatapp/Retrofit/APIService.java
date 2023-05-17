@@ -98,7 +98,13 @@ public interface APIService {
             @Query("size") int size,
             @Query("content") String content
     );
-
+    @GET("messages/find-message-by-contact")
+    Call<PagedResultDto<Message>> findMessagesByIdUser(
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("content") String content,
+            @Query("contactId") String contactId
+    );
     @POST("messages/sendAction")
     Call<ResponseBody> sendAction(@Body PayloadAction payloadAction);
 
@@ -149,10 +155,10 @@ public interface APIService {
     @PATCH("groups/{groupId}/remove-member")
     Call<Group> decentralization(@Path("groupId") String groupId, @Query("memberId") String memberId, @Query("roleName") String roleName);
 
-    @PATCH("groups/{groupId}/response-member-join")
-    Call<Member> getRequestMemberJoin(@Path("groupId") String groupId, @Query("memberId") String memberId);
-
     @GET("groups/{groupId}/request-member-join")
+    Call<Member> getRequestMemberJoin(@Path("groupId") String groupId, @Query("memberId") String memberId, @Query("accept") Boolean accept);
+
+    @PATCH("groups/response-member-join/{groupId}")
     Call<Void> responseMemberJoin(@Path("groupId") String groupId, @Query("memberId") String memberId, @Query("accept") Boolean accept);
 
     @GET("groups/{groupId}/members-paginate")
@@ -163,6 +169,8 @@ public interface APIService {
 
     @PATCH("groups/{groupId}/leave-group")
     Call<Void> leaveGroup(@Path("groupId") String groupId);
+    @GET("groups/get-waiting-accept/{groupId}")
+    Call<List<UserBasicDto>> getWaitingAccept(@Path("groupId") String groupId);
 
     @GET("groups/get-friend-add-group/{groupId}")
     Call<List<UserBasicDto>> getNonBlockedNonMemberFriends(@Path("groupId") String groupId);

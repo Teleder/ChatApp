@@ -63,8 +63,8 @@ public class LastMessageAdapter extends RecyclerView.Adapter<LastMessageAdapter.
                 holder.tvLastMessages.setText(conservation.getLastMessage() != null ? conservation.getLastMessage().getContent() : "Not have message!");
                 holder.userId.setText(conservation.getUser_1().getId());
                 holder.tvTime.setText("3h");
-                if (conservation.getUser_1().getAvatar() != null)
-                    Glide.with(context).load(conservation.getUser_2().getAvatar()).into(holder.avatar);
+                if (conservation.getUser_1() != null && conservation.getUser_1().getAvatar() != null)
+                    Glide.with(context).load(conservation.getUser_1().getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(holder.avatar);
             }
 
             holder.tvDisplayName.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +106,7 @@ public class LastMessageAdapter extends RecyclerView.Adapter<LastMessageAdapter.
 
         public LastMessageHolder(View itemView) {
             super(itemView);
-            avatar = itemView.findViewById(R.id.imgUser);
+            avatar = itemView.findViewById(R.id.image_User);
             tvDisplayName = itemView.findViewById(R.id.tvNameUser);
             tvLastMessages = itemView.findViewById(R.id.tvLastMessages);
             tvTime = itemView.findViewById(R.id.tv_time_chat);

@@ -17,6 +17,7 @@ import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.R;
 import com.example.chatapp.Retrofit.APIService;
 import com.example.chatapp.Retrofit.RetrofitClient;
+import com.example.chatapp.Utils.CONSTS;
 
 import java.util.List;
 
@@ -49,8 +50,8 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
     @Override
     public void onBindViewHolder(ContactAdapter.ContactHolder holder, int position) {
         UserBasicDto userBasicDto = arrList.get(position);
-        if (userBasicDto.getAvatar() != null)
-            Glide.with(context).load(userBasicDto.getAvatar()).into(holder.avatar);
+        if (userBasicDto != null && userBasicDto.getAvatar() != null && userBasicDto.getAvatar().getUrl() != null)
+            Glide.with(context).load(userBasicDto.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(holder.avatar);
         holder.tvDisplayName.setText(userBasicDto.getDisplayName());
         holder.tvBio.setText(userBasicDto.getBio());
         holder.userId.setText(userBasicDto.getId());
@@ -78,7 +79,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
 
         public ContactHolder(View itemView) {
             super(itemView);
-            avatar = itemView.findViewById(R.id.imgUser);
+            avatar = itemView.findViewById(R.id.image_User);
             tvDisplayName = itemView.findViewById(R.id.tvNameUser);
             tvBio = itemView.findViewById(R.id.tvBioUser);
             btnAddFriend = itemView.findViewById(R.id.btnUnFriend);

@@ -159,7 +159,8 @@ public class MainActivity extends AppCompatActivity implements MessageObserver {
         });
         imageViewProfile = findViewById(R.id.imageProfile);
         if (userProfileDto.getAvatar() != null)
-            Glide.with(getApplicationContext()).load(userProfileDto.getAvatar().getUrl().replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(imageViewProfile);
+            Glide.with(getApplicationContext()).load(userProfileDto.getAvatar().getUrl()
+                    .replace("localhost:8080", "http://" + CONSTS.BASEURL)).into(imageViewProfile);
     }
 
 
