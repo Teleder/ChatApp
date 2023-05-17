@@ -1,5 +1,6 @@
 package com.example.chatapp.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -28,7 +29,8 @@ public class GroupDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_detail);
-
+        Intent intent = getIntent();
+        String groupId = intent.getStringExtra("groupId");
         btnBlockMembers = findViewById(R.id.btn_block_members);
         btnMembers = findViewById(R.id.btn_members);
         btnRequestMembers = findViewById(R.id.btn_request_members);
@@ -37,9 +39,9 @@ public class GroupDetailActivity extends AppCompatActivity {
         btnDeleteGroup = findViewById(R.id.btn_delete_group);
 
         btnBlockMembers.setOnClickListener(v -> showBlockMembersDialog());
-        btnMembers.setOnClickListener(v -> showMembersDialog());
-        btnRequestMembers.setOnClickListener(v -> showRequestMembersDialog());
-        btnRoles.setOnClickListener(v -> showRolesDialog());
+        btnMembers.setOnClickListener(v -> showMembersDialog(groupId));
+        btnRequestMembers.setOnClickListener(v -> showRequestMembersDialog(groupId));
+        btnRoles.setOnClickListener(v -> showAddMemberDialog(groupId));
         btnSetPublicPrivate.setOnClickListener(v -> setGroupPublicPrivate());
         btnDeleteGroup.setOnClickListener(v -> deleteGroup());
     }
@@ -52,27 +54,23 @@ public class GroupDetailActivity extends AppCompatActivity {
         dialog.show(getSupportFragmentManager(), "BlockMemberDialog");
     }
 
-    private void showMembersDialog() {
-        // TODO: get the list of members
-        List<Member> members = new ArrayList<>();
+    private void showMembersDialog(String groupId) {
         // show the dialog
-        RequestMemberDialog dialog = new RequestMemberDialog(members);
+        RequestMemberDialog dialog = new RequestMemberDialog(groupId);
         dialog.show(getSupportFragmentManager(), "MemberDialog");
     }
 
-    private void showRequestMembersDialog() {
-        // TODO: get the list of request members
-        List<Member> requestMembers = new ArrayList<>();
+    private void showRequestMembersDialog(String groupId) {
         // show the dialog
-        RequestMemberDialog dialog = new RequestMemberDialog(requestMembers);
+        RequestMemberDialog dialog = new RequestMemberDialog(groupId);
         dialog.show(getSupportFragmentManager(), "RequestMemberDialog");
     }
 
-    private void showRolesDialog() {
+    private void showAddMemberDialog(String groupId) {
         // TODO: get the list of roles
         List<Role> roles = new ArrayList<>();
         // show the dialog
-        RoleDialog dialog = new RoleDialog(roles);
+        RoleDialog dialog = new RoleDialog(groupId);
         dialog.show(getSupportFragmentManager(), "RolesDialog");
     }
 

@@ -8,104 +8,133 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chatapp.Adapter.FriendMessAdapter;
 import com.example.chatapp.Adapter.RoleAdapter;
+import com.example.chatapp.Adapter.SearchAdapter;
+import com.example.chatapp.Dtos.PagedResultDto;
+import com.example.chatapp.Dtos.UserBasicDto;
 import com.example.chatapp.Model.Group.Role;
 import com.example.chatapp.Model.Permission.Action;
 import com.example.chatapp.Model.Permission.Permission;
 import com.example.chatapp.R;
+import com.example.chatapp.Retrofit.APIService;
+import com.example.chatapp.Retrofit.RetrofitClient;
+import com.example.chatapp.Retrofit.SharedPrefManager;
+import com.example.chatapp.Retrofit.TokenManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RoleDialog extends DialogFragment {
-    private List<Role> roles;
-    private Map<String, String> permissions = new HashMap<String, String>() {{
-        put("ADD_MEMBER_TO_GROUP", "Add Member To Group");
-        put("BLOCK_MEMBER_GROUP", "Block Member Group");
-        put("REQUEST_MEMBER_TO_GROUP", "Request Member To Group");
-        put("REMOVE_MEMBER", "Remove Member");
-        put("REMOVE_BLOCK_MEMBER_GROUP", "Remove Block Member Group");
-        put("BLOCK_MEMBER_GROUP", "Block Member Group");
-    }};
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
-    public RoleDialog(List<Role> roles) {
-        this.roles = roles;
+public class RoleDialog extends DialogFragment {
+    SharedPrefManager sharedPrefManager;
+    APIService apiService;
+    RecyclerView rcIcon;
+    List<UserBasicDto> arrayList;
+    RoleAdapter friendMessAdapter;
+    SearchView searchView;
+    private RetrofitClient retrofitClient;
+    private TokenManager tokenManager;
+    private Retrofit retrofit;
+    List<UserBasicDto> members;
+    String groupId;
+
+    public RoleDialog(String groupId) {
+        this.groupId = groupId;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Manage Roles");
+        builder.setTitle("Add Friend");
 
         // create the view for the dialog
         View view = getActivity().getLayoutInflater().inflate(R.layout.role_dialog, null);
-        RecyclerView roleRecyclerView = view.findViewById(R.id.role_recycler_view);
-        RoleAdapter roleAdapter = new RoleAdapter(roles);
-        roleRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        roleRecyclerView.setAdapter(roleAdapter);
+        retrofitClient = RetrofitClient.getInstance(view.getContext());
+        tokenManager = retrofitClient.getTokenManager();
+        retrofit = retrofitClient.getRetrofit();
+        sharedPrefManager = new SharedPrefManager(view.getContext());
+        rcIcon = view.findViewById(R.id.rcListSearch);
+        searchView = view.findViewById(R.id.searchView);
+        searchView.clearFocus();
+        getListMembers(groupId,view);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
 
-        // when the add role button is clicked
-        Button addRoleButton = view.findViewById(R.id.add_role);
-        addRoleButton.setOnClickListener(v -> {
-            AlertDialog.Builder addRoleDialog = new AlertDialog.Builder(getActivity());
-                addRoleDialog.setTitle("Add Role");
-            View addRoleView = getActivity().getLayoutInflater().inflate(R.layout.add_role_dialog, null);
-
-            EditText roleNameInput = addRoleView.findViewById(R.id.role_name_input);
-            TextView permissionsPreview = addRoleView.findViewById(R.id.permissions_preview);
-            addRoleDialog.setView(addRoleView);
-
-            String[] permissionValues = permissions.values().toArray(new String[0]);
-            boolean[] checkedPermissions = new boolean[permissionValues.length];
-            addRoleDialog.setMultiChoiceItems(permissionValues, checkedPermissions, new DialogInterface.OnMultiChoiceClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                    checkedPermissions[which] = isChecked;
-
-                    // Update permissions preview
-                    StringBuilder selectedPermissions = new StringBuilder();
-                    for (int i = 0; i < checkedPermissions.length; i++) {
-                        if (checkedPermissions[i]) {
-                            selectedPermissions.append(permissionValues[i]).append(", ");
-                        }
-                    }
-                    permissionsPreview.setText(selectedPermissions.toString());
-                }
-            });
-
-            addRoleDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String roleName = roleNameInput.getText().toString();
-                    List<Permission> selectedPermissions = new ArrayList<>();
-                    int i = 0;
-                    for (Map.Entry<String, String> entry : permissions.entrySet()) {
-                        if (checkedPermissions[i]) {
-                            Permission permission = new Permission();
-                            permission.setAction(Action.valueOf(entry.getKey()));
-                            selectedPermissions.add(permission);
-                        }
-                        i++;
-                    }
-                    Role newRole = new Role();
-                    newRole.setName(roleName);
-                    newRole.setPermissions(selectedPermissions);
-                    roles.add(newRole);
-                    roleAdapter.notifyDataSetChanged();
-                }
-            });
-            addRoleDialog.setNegativeButton("Cancel", null);
-            addRoleDialog.create().show();
+            @Override
+            public boolean onQueryTextChange(String s) {
+                getContacts(s, view);
+                return false;
+            }
         });
-
         builder.setView(view);
+
         return builder.create();
+    }
+    private void getContacts(String s, View view) {
+        apiService = retrofitClient.getRetrofit().create(APIService.class);
+        apiService.getContacts(s, 0, 1000).enqueue(new Callback<PagedResultDto<UserBasicDto>>() {
+            @Override
+            public void onResponse(Call<PagedResultDto<UserBasicDto>> call, Response<PagedResultDto<UserBasicDto>> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        arrayList = response.body().getData();
+                        friendMessAdapter = new RoleAdapter(view.getContext(), arrayList, members, groupId);
+                        rcIcon.setHasFixedSize(true);
+                        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
+                        rcIcon.setLayoutManager(layoutManager);
+                        rcIcon.setAdapter(friendMessAdapter);
+                        friendMessAdapter.notifyDataSetChanged();
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(view.getContext(), "fail", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PagedResultDto<UserBasicDto>> call, Throwable t) {
+                Toast.makeText(view.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public void getListMembers(String groupId, View view) {
+        apiService = retrofitClient.getRetrofit().create(APIService.class);
+        apiService.getNonBlockedNonMemberFriends(groupId).enqueue(new Callback<List<UserBasicDto>>() {
+            @Override
+            public void onResponse(Call<List<UserBasicDto>> call, Response<List<UserBasicDto>> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        members = response.body();
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(view.getContext(), "fail", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserBasicDto>> call, Throwable t) {
+                Toast.makeText(view.getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
